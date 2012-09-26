@@ -180,7 +180,6 @@ def breadthFirstSearch(problem):
   frontier = []
   visited = []
   start = problem.getStartState()
-  print start
   # [(int, int), "string", int]
   start = (start, "none", 0)
 
@@ -194,6 +193,9 @@ def breadthFirstSearch(problem):
     children = problem.getSuccessors(current_node[0])
     for child in children:
       if child not in visited:
+        print "children"
+        print children
+        print "child"
         print child
         child_to_parent[child] = current_node
         frontier.insert(0, child)
