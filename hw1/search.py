@@ -175,105 +175,42 @@ def breadthFirstSearch(problem):
         nodes_parent = node[3].get()
         if child[0] == node[0] and child[1] == node[1] and child[2] == node[2] and childs_parent[0] == nodes_parent[0] and childs_parent[1] == nodes_parent[1] and childs_parent[2] == nodes_parent[2]:
           return True
-
     return False
 
   frontier = []
   visited = []
   start = problem.getStartState()
-  start = [start, "none", 0, []]
+  print start
+  # [(int, int), "string", int]
+  start = (start, "none", 0)
 
   frontier.insert(0, start)
 
+  child_to_parent = {}
   while frontier:
-    child_to_parent = {}
     current_node = frontier.pop()
     visited.append(current_node)
     
+    children = problem.getSuccessors(current_node[0])
+    for child in children:
+      if child not in visited:
+        print child
+        child_to_parent[child] = current_node
+        frontier.insert(0, child)
+      
     if problem.isGoalState(current_node[0]):
       directions = []
       path_node = current_node
       directions.insert(0, path_node[1])
+      print current_node
       while path_node != start:
-        path_node = path_node[3].get()
+        new_node = child_to_parent[path_node]
+        path_node = new_node
         directions.insert(0,path_node[1])
       directions.pop(0) # this is to get rid of the start "none" direction
       print directions
       return directions
 
-    children = problem.getSuccessors(current_node[0])
-    for child in children:
-      child = [child[0], child[1], child[2], ref(current_node)]
-      if not in_visited(visited, child):
-        frontier.insert(0, child)
-
-
-  # def at_goal(current_depth_nodes):
-  #   if not current_depth_nodes: 
-  #     print "nothing in current depth"
-  #     return True
-  #   for position in current_depth_nodes:
-  #     if problem.isGoalState(position[0]):
-  #       return True
-  #   return False
-
-
-  # start = problem.getStartState()
-  # iterative_depth_array = []
-  # current_depth_nodes = []
-  # children = problem.getSuccessors(start)
-  # for child in children:
-  #   current_depth_nodes.append(child)
-
-# iterative_depth_array is a collection of the frontiers.  It
-# can be imagined as each depth of the search tree
-  iterative_depth_array.append(current_depth_nodes)
-
-  # while not at_goal(current_depth_nodes):
-  #   next_depth_nodes = []
-  #   for node in current_depth_nodes:
-  #     children_will_be_added = True
-  #     children = problem.getSuccessors(node[0])
-  #     for a_depth in iterative_depth_array:
-  #       for child in children:
-  #         if child in a_depth:
-  #           children_will_be_added = False
-  #     if children_will_be_added:
-  #       for child in children:
-  #         next_depth_nodes.append(child)
-  #   current_depth_nodes = next_depth_nodes
-  #   if next_depth_nodes:
-  #     iterative_depth_array.append(current_depth_nodes)
-
-# this section of the code is walking back up the stored frontiers,
-# and putting the path that it finds into the 'directions' queue.
-# This works because before putting a node onto the next frontier
-# the algorithm ensures that the node doesn't exist elsewhere in the
-# gathered frontiers.  This means there will be no conflicts
-
-  # goal_position = []
-  # for node in iterative_depth_array[-1]:
-  #   if problem.isGoalState(node[0]):
-  #     goal_position = node
-
-  # current_position = goal_position
-  # directions = []
-  # iterative_depth_array.pop()
-  # if goal_position:
-  #   directions.insert(0,goal_position[1])
-
-  # while iterative_depth_array:
-  #   next_depth_nodes = iterative_depth_array.pop()
-  #   for node in next_depth_nodes:
-  #     if current_position:
-  #       children = problem.getSuccessors(current_position[0])
-  #       for child in children: 
-  #         if node[0] == child[0] :
-  #           directions.insert(0,node[1])
-  #           current_position = node
-  # print directions
-  # return directions
-      
 def uniformCostSearch(problem):
   "Search the node of least total cost first. "
   "*** YOUR CODE HERE ***"
