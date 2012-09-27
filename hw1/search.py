@@ -254,19 +254,17 @@ def nullHeuristic(state, problem=None):
 def aStarSearch(problem, heuristic=nullHeuristic):
   "Search the node that has the lowest combined cost and heuristic first."
   "*** YOUR CODE HERE ***"
-  from game import Directions
-  s = Directions.SOUTH
-  w = Directions.WEST
-  e = Directions.EAST
-  n = Directions.NORTH
   distance = 0
+  ##enodes keeps track of all the information of a given node
   ##Direction, Parent, Calculated heuristic, children, distance
   enodes = {}
-  ngs = []
+  ##Checks to see what is and isn't a goalstate
   start = problem.getStartState()
   current = start
   enodes[current] = ['Startoo','Startoo', -1, [], distance]
-  ngs += ['Startoo']
+  toCheck = []
+  nlist = []
+  nlist.append(current)
 
   while True:
     expanded = problem.getSuccessors(current)
@@ -277,46 +275,48 @@ def aStarSearch(problem, heuristic=nullHeuristic):
 
     ##Format the enodes dictionary and add the children nodes as well as various other information
     for nodes in expanded:
-      if nodes[0] not in enodes:
+      if nodes[0] not in nlist:
+        nlist.append(current)
         enodes[nodes[0]] = [nodes[1], current, distance + heuristic(nodes[0], problem), [], distance]
         enodes[current][3] += [nodes[0]]
+        toCheck += [nodes[0]]
 
     ##Checks the nodes to see if they are the goal state, if not then expand another node
-    for nodes in enodes:
-      if nodes not in ngs:
-        if problem.isGoalState(nodes):
-          ##Generate the path from the goal node to the start node
-          temp = []
-          path = []
-          while True:
-            temp = enodes[nodes][1]
-            if(enodes[nodes][0] != 'Startoo'):
-              path.append(enodes[nodes][0])
-            else:
-              break
-            nodes = temp
+    for nodes in toCheck:
+      nodes = toCheck.pop()
+      #if nodes not in ngs:
+      if problem.isGoalState(nodes):
+         ##Generate the path from the goal node to the start node
+        temp = []
+        path = []
+        while True:
+          temp = enodes[nodes]
+          if(temp[0] != 'Startoo'):
+            path.append(temp[0])
+          else:
+            break
+          nodes = temp[1]
 
-          path.reverse()
-          return path
-        else:
-          ngs += [nodes]
+        path.reverse()
+        return path
+        #else:
+        #  ngs += [nodes]
 
     ##Get the best node for expansion
     ##Temporary variable to store the heuristic size
     temp = 0
-    for nodes in enodes:
-      if enodes[nodes][2] != -1:
+    for nodes, stuff in enodes.iteritems():
+      if(stuff[2] != -1):
         if temp == 0:
-          temp = enodes[nodes][2]
+          temp = stuff[2]
           current = nodes
-          distance = enodes[nodes][4]
-        elif enodes[nodes][2] < temp:
-          temp = enodes[nodes][2]
+          distance = stuff[4]
+        elif stuff[2] < temp:
+          temp = stuff[2]
           current = nodes
-          distance = enodes[nodes][4]
+          distance = stuff[4]
 
   return [w]
-
     
   
 # Abbreviations
