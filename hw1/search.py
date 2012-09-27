@@ -164,19 +164,6 @@ def breadthFirstSearch(problem):
   "Search the shallowest nodes in the search tree first. [p 81]"
   "*** YOUR CODE HERE ***"
 
-  def in_visited(visited, child):
-    if not visited:
-      return False
-    if child[3] == []:
-      return False
-    childs_parent = child[3].get()
-    for node in visited:
-      if node[3]:
-        nodes_parent = node[3].get()
-        if child[0] == node[0] and child[1] == node[1] and child[2] == node[2] and childs_parent[0] == nodes_parent[0] and childs_parent[1] == nodes_parent[1] and childs_parent[2] == nodes_parent[2]:
-          return True
-    return False
-
   frontier = []
   visited = []
   start = problem.getStartState()
@@ -201,6 +188,7 @@ def breadthFirstSearch(problem):
         frontier.insert(0, child)
       
     if problem.isGoalState(current_node[0]):
+      print "Found it"
       directions = []
       path_node = current_node
       directions.insert(0, path_node[1])
