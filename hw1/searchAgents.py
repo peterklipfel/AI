@@ -287,6 +287,8 @@ class CornersProblem(search.SearchProblem):
     for corner in self.explored_corners:
       if not self.explored_corners[corner]:
         return False
+    print "explored corners"
+    print self.explored_corners
     return True
     
   def getStartState(self):
@@ -327,6 +329,8 @@ class CornersProblem(search.SearchProblem):
       dx, dy = Actions.directionToVector(action)
       nextx, nexty = int(x+dx), int(y+dy)
       cost = 1
+      if (x, y) in self.corners:
+        self.explored_corners[(x, y)] = True
       if not self.walls[nextx][nexty]:
         successors.append( ((nextx, nexty), action, cost) )
       
