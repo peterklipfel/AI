@@ -460,8 +460,17 @@ def foodHeuristic(state, problem):
   """
   position, foodGrid = state
   "*** YOUR CODE HERE ***"
-  return 0
-  
+  food_weight = 0
+  wall_weight = 0
+  for food_piece in foodGrid.asList():
+    dist = abs(food_piece[0]-position[0]) + abs(food_piece[1]-position[1])
+    if dist > food_weight:
+      food_weight = dist
+    for wall in problem.walls.asList():
+      wall_weight =  wall_weight + abs(food_piece[0]-wall[0]) + abs(food_piece[1]-wall[1])
+
+  return food_weight + wall_weight
+
 class ClosestDotSearchAgent(SearchAgent):
   "Search for all food using a sequence of searches"
   def registerInitialState(self, state):

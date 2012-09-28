@@ -188,11 +188,11 @@ def breadthFirstSearch(problem):
         frontier.insert(0, child)
       
     if problem.isGoalState(current_node[0]):
-      print "Found it"
+      # print "Found it"
       directions = []
       path_node = current_node
       directions.insert(0, path_node[1])
-      print current_node
+      # print current_node
       while path_node != start:
         new_node = child_to_parent[path_node]
         path_node = new_node
@@ -204,44 +204,36 @@ def breadthFirstSearch(problem):
 def uniformCostSearch(problem):
   "Search the node of least total cost first. "
   "*** YOUR CODE HERE ***"
-  # def get_min_node(frontier):
-  #   min_node = frontier[0]
-  #   for node in frontier:
-  #     if node[2] < min_node:
-  #       min_node = node
-  #   return min_node
-
-  # print problem.getSuccessors(problem.getStartState())
-  start = problem.getStartState()
-  children = problem.getSuccessors(start)
   frontier = util.PriorityQueue()
+  start = problem.getStartState()
+  start = (start, "none", 99999999)
   visited = []
-  for child in children:
-    frontier.push(child, child[2])
-  current_path = []
-  while True:
-    if not frontier:
-      print "No Solution"
-      return []
+  child_to_parent = {}
+  frontier.push(start, start[2])
+  while frontier:
     current_node = frontier.pop()
-    current_path.append(current_node)
-    visited.append(current_node)
-
-    if problem.isGoalState(current_node[0]):
-      # print "found solution"
-      # print current_path
-      directions = []
-      for node in current_path:
-        directions.append(node[1])
-      return directions
     visited.append(current_node)
     children = problem.getSuccessors(current_node[0])
 
     for child in children:
       if child not in visited:
+        child_to_parent[child] = current_node
         frontier.push(child, child[2])
 
+    if problem.isGoalState(current_node[0]):
+      directions = []
+      path_node = current_node
+      directions.insert(0, path_node[1])
+      while path_node != start:
+        new_node = child_to_parent[path_node]
+        path_node = new_node
+        directions.insert(0,path_node[1])
+      directions.pop(0) # this is to get rid of the start "none" direction
+      print directions
+      return directions
 
+
+  return []
 
 
 def nullHeuristic(state, problem=None):
