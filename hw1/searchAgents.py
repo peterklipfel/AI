@@ -281,11 +281,12 @@ class CornersProblem(search.SearchProblem):
     self.explored_corners = {}
     for corner in self.corners:
       self.explored_corners[corner] = False
+    self.current_path = []
     
 
   def checked_everywhere(self):
-    for corner in self.explored_corners:
-      if not self.explored_corners[corner]:
+    for corner in self.corners:
+      if corner not in self.current_path:
         return False
     print "explored corners"
     print self.explored_corners
@@ -299,6 +300,7 @@ class CornersProblem(search.SearchProblem):
   def isGoalState(self, state):
     "Returns whether this search state is a goal state of the problem"
     "*** YOUR CODE HERE ***"
+    self.current_path.append(state)
     return self.checked_everywhere()
        
   def getSuccessors(self, state):
