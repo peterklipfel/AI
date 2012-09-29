@@ -146,7 +146,7 @@ def depthFirstSearch(problem):
         current_node = temp;
  
       directions.reverse()
-      return directionst
+      return directions
        
     ##Add the current node to the list of nodes visited
     visited_nodes.append(current_node)
