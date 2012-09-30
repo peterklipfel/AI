@@ -180,9 +180,9 @@ def breadthFirstSearch(problem):
     if (children):
       for child in children:
         if (child[0] not in visited):
-          current_path = [state[3]];
+          current_path = list(state[3]);
           current_path.append(child[1])
-          child = [child];
+          child = list(child);
           child.append(current_path)
           frontier.push(child)
           visited[child[0]] = True
