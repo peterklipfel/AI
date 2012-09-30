@@ -95,7 +95,7 @@ def depthFirstSearch(problem):
   # print "Second successors:", problem.getSuccessors(problem.getSuccessors(problem.getStartState())[0][0])
   # print dir(problem)
 
-  # Every list item is of the form
+  # Every list child is of the form
   # {(x, y), Direction from parent, cost?}
 
 
@@ -164,42 +164,75 @@ def breadthFirstSearch(problem):
   "Search the shallowest nodes in the search tree first. [p 81]"
   "*** YOUR CODE HERE ***"
 
-  frontier = []
-  visited = []
-  start = problem.getStartState()
-  # [(int, int), "string", int]
-  start = (start, "none", 0)
+  visited = {}
+  startState = problem.getStartState();
+  state = [startState,"",1,[]];
+  frontier = util.Queue();
+  visited[state[0]] = True
+  path = []
 
-  frontier.insert(0, start)
+  if (problem.isGoalState(startState)):
+    return []
+ 
+  while(1):    
+    children = problem.getSuccessors(state[0]);
+   
+    if (children):
+      for child in children:
+        if (child[0] not in visited):
+          current_path = [state[3]];
+          current_path.append(child[1])
+          child = [child];
+          child.append(current_path)
+          frontier.push(child)
+          visited[child[0]] = True
+        if (problem.isGoalState(child[0])):
+          if (len(child) < 4):
+            current_path = list(state[3])
+            current_path.append(child[1])
+            return current_path;
+          return child[3]
+   
+    state = frontier.pop();
 
-  child_to_parent = {}
-  while frontier:
-    current_node = frontier.pop()
-    visited.append(current_node)
+  return []
+
+  # frontier = []
+  # visited = []
+  # start = problem.getStartState()
+  # # [(int, int), "string", int]
+  # start = (start, "none", 0)
+
+  # frontier.insert(0, start)
+
+  # child_to_parent = {}
+  # while frontier:
+  #   current_node = frontier.pop()
+  #   visited.append(current_node)
     
-    children = problem.getSuccessors(current_node[0])
-    for child in children:
-      if child not in visited:
-        # print "children"
-        # print children
-        # print "child"
-        # print child
-        child_to_parent[child] = current_node
-        frontier.insert(0, child)
+  #   children = problem.getSuccessors(current_node[0])
+  #   for child in children:
+  #     if child not in visited:
+  #       # print "children"
+  #       # print children
+  #       # print "child"
+  #       # print child
+  #       child_to_parent[child] = current_node
+  #       frontier.insert(0, child)
       
-    if problem.isGoalState(current_node[0]):
-      # print "Found it"
-      directions = []
-      path_node = current_node
-      directions.insert(0, path_node[1])
-      # print current_node
-      while path_node != start:
-        new_node = child_to_parent[path_node]
-        path_node = new_node
-        directions.insert(0,path_node[1])
-      directions.pop(0) # this is to get rid of the start "none" direction
-      print directions
-      return directions
+  #   if problem.isGoalState(current_node[0]):
+  #     # print "Found it"
+  #     directions = []
+  #     path_node = current_node
+  #     directions.insert(0, path_node[1])
+  #     # print current_node
+  #     while path_node != start:
+  #       new_node = child_to_parent[path_node]
+  #       path_node = new_node
+  #       directions.insert(0,path_node[1])
+  #     directions.pop(0) # this is to get rid of the start "none" direction
+  #     print directions
+  #     return directions
 
 def uniformCostSearch(problem):
   "Search the node of least total cost first. "
@@ -297,7 +330,7 @@ def aStarSearch(problem, heuristic=nullHeuristic):
     ##Get the best node for expansion
     ##Temporary variable to store the heuristic size
     temp = 0
-    for nodes, stuff in enodes.iteritems():
+    for nodes, stuff in enodes.iterchilds():
       if(stuff[2] != -1):
         if temp == 0:
           temp = stuff[2]
