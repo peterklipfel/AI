@@ -168,7 +168,7 @@ def breadthFirstSearch(problem):
   startState = problem.getStartState();
   state = [startState,"",1,[]];
   frontier = util.Queue();
-  visited[state[0]] = True
+  visited[state[0]] = "T"
   path = []
 
   if (problem.isGoalState(startState)):
@@ -185,7 +185,7 @@ def breadthFirstSearch(problem):
           child = list(child);
           child.append(current_path)
           frontier.push(child)
-          visited[child[0]] = True
+          visited[child[0]] = "T"
         if (problem.isGoalState(child[0])):
           if (len(child) < 4):
             current_path = list(state[3])

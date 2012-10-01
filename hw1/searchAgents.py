@@ -325,14 +325,27 @@ class CornersProblem(search.SearchProblem):
       "*** YOUR CODE HERE ***"
       
 
-      x, y = state
+    successors = []
+    for action in [Directions.NORTH, Directions.SOUTH, Directions.EAST, Directions.WEST]:
+      print state
+      x,y = state[0]
+     
       dx, dy = Actions.directionToVector(action)
-      nextx, nexty = int(x+dx), int(y+dy)
-      cost = 1
-      if (x, y) in self.corners:
-        self.explored_corners[(x, y)] = True
-      if not self.walls[nextx][nexty]:
-        successors.append( ((nextx, nexty), action, cost) )
+      nextx, nexty = int(x + dx), int(y + dy)
+      hitsWall = self.walls[nextx][nexty]
+      if not hitsWall:
+        nextState = (nextx, nexty)
+        nextBools = list(state[1])
+        if (nextState == self.corners[0]):
+            nextBools[0] = True
+        if (nextState == self.corners[1]):
+            nextBools[1] = True
+        if (nextState == self.corners[2]):
+            nextBools[2] = True
+        if (nextState == self.corners[3]):
+            nextBools[3] = True
+        cost = 1
+        successors.append( ( (nextState , tuple(nextBools)), action, cost) )
       
     self._expanded += 1
     return successors
