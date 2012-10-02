@@ -508,8 +508,6 @@ class ClosestDotSearchAgent(SearchAgent):
     while frontier:
       current_node = frontier.pop()
       visited.append(current_node)
-      if current_node[0] != (19,3) and current_node != (19.2):
-        print current_node
       children = problem.getSuccessors(current_node[0])
       for child in children:
         if child not in visited:
@@ -520,14 +518,8 @@ class ClosestDotSearchAgent(SearchAgent):
             path_node = child
             while path_node != start:
               directions.insert(0, path_node[1])
-              # print directions
               new_node = child_to_parent[path_node]
               path_node = new_node
-              # print directions
-            # first_direction = directions[0][1]
-            # if first_direction == "none":
-            #   directions.pop(0)
-            # print directions
             return directions
     print "no more frontier"
     return []
@@ -566,7 +558,7 @@ class AnyFoodSearchProblem(PositionSearchProblem):
     """
     x,y = state
     
-    return self.food[x],[y]
+    return self.food[x][y]
 
 ##################
 # Mini-contest 1 #
