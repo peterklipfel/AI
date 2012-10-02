@@ -497,7 +497,35 @@ class ClosestDotSearchAgent(SearchAgent):
     problem = AnyFoodSearchProblem(gameState)
 
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    start = problem.getStartState()
+    start = (start, "none", 0)
+    frontier = []
+    visited = []
+
+    child_to_parent = {}
+
+    while frontier:
+      print "1"
+      current_node = frontier.pop()
+      visited.append(current_node)
+      children = problem.getSuccessors(current_node[0])
+      print "2"
+      for child in children:
+        if child not in visited:
+          child_to_parent[child] = current_node
+          frontier.insert(0, child)
+      print "3"
+      if problem.isGoalState(current_node[0]):
+        directions = []
+        path_node = current_node
+        while path_node != start:
+          new_node = child_to_parent[path_node]
+          path_node = new_node
+          directions.insert(0, path_node[1])
+        directions.pop(0)
+        print directions
+        return directions
+
   
 class AnyFoodSearchProblem(PositionSearchProblem):
   """
@@ -532,8 +560,7 @@ class AnyFoodSearchProblem(PositionSearchProblem):
     """
     x,y = state
     
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    return self.food[x],[y]
 
 ##################
 # Mini-contest 1 #
