@@ -565,12 +565,26 @@ class AnyFoodSearchProblem(PositionSearchProblem):
 ##################
 
 class ApproximateSearchAgent(Agent):
+  from game import Directions
   "Implement your contest entry here.  Change anything but the class name."
   
   def registerInitialState(self, state):
     "This method is called before any moves are made."
     "*** YOUR CODE HERE ***"
-    
+    self.actions = []
+    currentState = state
+    while(currentState.getFood().count() > 0): 
+      nextPathSegment = self.getAction(currentState) # The missing piece
+      self.actions += nextPathSegment
+      for action in nextPathSegment: 
+        legal = currentState.getLegalActions()
+        if action not in legal: 
+          t = (str(action), str(currentState))
+          raise Exception, 'findPathToClosestDot returned an illegal move: %s!\n%s' % t
+        currentState = currentState.generateSuccessor(0, action)
+    self.actionIndex = 0
+    print 'Path found with cost %d.' % len(self.actions)
+
   def getAction(self, state):
     """
     From game.py: 
@@ -578,7 +592,40 @@ class ApproximateSearchAgent(Agent):
     Directions.{North, South, East, West, Stop}
     """ 
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    startPosition = state.getPacmanPosition()
+    food = state.getFood()
+    walls = state.getWalls()
+    problem = AnyFoodSearchProblem(state)
+
+    "*** YOUR CODE HERE ***"
+    return []
+    start = problem.getStartState()
+    start = (start, "none", 0)
+    frontier = []
+    visited = []
+    frontier.insert(0, start)
+
+    child_to_parent = {}
+
+    while frontier:
+      current_node = frontier.pop()
+      visited.append(current_node)
+      children = problem.getSuccessors(current_node[0])
+      for child in children:
+        if child not in visited:
+          child_to_parent[child] = current_node
+          frontier.insert(0, child)
+          if problem.isGoalState(child[0]):
+            directions = []
+            path_node = child
+            while path_node != start:
+              directions.insert(0, path_node[1])
+              new_node = child_to_parent[path_node]
+              path_node = new_node
+            print directions
+            return directions
+    print "no more frontier"
+    return []
     
 def mazeDistance(point1, point2, gameState):
   """
