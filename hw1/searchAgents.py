@@ -598,7 +598,6 @@ class ApproximateSearchAgent(Agent):
     problem = AnyFoodSearchProblem(state)
 
     "*** YOUR CODE HERE ***"
-    return []
     start = problem.getStartState()
     start = (start, "none", 0)
     frontier = []

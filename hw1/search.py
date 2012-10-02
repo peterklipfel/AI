@@ -180,19 +180,13 @@ def breadthFirstSearch(problem):
     children = problem.getSuccessors(current_node[0])
     for child in children:
       if child not in visited:
-        # print "children"
-        # print children
-        # print "child"
-        # print child
         child_to_parent[child] = current_node
         frontier.insert(0, child)
       
     if problem.isGoalState(current_node[0]):
-      # print "Found it"
       directions = []
       path_node = current_node
       directions.insert(0, path_node[1])
-      # print current_node
       while path_node != start:
         new_node = child_to_parent[path_node]
         path_node = new_node
