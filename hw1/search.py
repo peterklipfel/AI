@@ -198,8 +198,9 @@ def breadthFirstSearch(problem):
         path_node = new_node
         directions.insert(0,path_node[1])
       directions.pop(0) # this is to get rid of the start "none" direction
-      print directions
+      # print directions
       return directions
+  return []
 
 def uniformCostSearch(problem):
   "Search the node of least total cost first. "

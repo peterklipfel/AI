@@ -288,20 +288,27 @@ class CornersProblem(search.SearchProblem):
     for corner in self.corners:
       if corner not in self.current_path:
         return False
-    print "explored corners"
-    print self.explored_corners
     return True
     
   def getStartState(self):
     "Returns the start state (in your state space, not the full Pacman state space)"
     "*** YOUR CODE HERE ***"
-    return self.startingPosition
+    return (self.startingPosition, ( (self.corners[0], False), 
+                                     (self.corners[1], False), 
+                                     (self.corners[2], False), 
+                                     (self.corners[3], False) ) )
     
   def isGoalState(self, state):
     "Returns whether this search state is a goal state of the problem"
     "*** YOUR CODE HERE ***"
-    self.current_path.append(state)
-    return self.checked_everywhere()
+    corners_dict = list(state)
+    temp = corners_dict.pop(0)
+
+    for corner in corners_dict[0]:
+      if not corner[1]:
+        return False
+    corners_dict.insert(0, temp)
+    return True
        
   def getSuccessors(self, state):
     """
@@ -326,15 +333,27 @@ class CornersProblem(search.SearchProblem):
 
       "*** YOUR CODE HERE ***"
       
-
-      x, y = state
+      # print "state"
+      # print state
+      x, y = state[0]
       dx, dy = Actions.directionToVector(action)
       nextx, nexty = int(x+dx), int(y+dy)
       cost = 1
-      if (x, y) in self.corners:
-        self.explored_corners[(x, y)] = True
+      # if (x, y) in self.corners:
+      #   self.explored_corners[(x, y)] = True
+      corners_visited = state[1]
+      temp_corners = []
+      for corner in corners_visited:
+        if corner[0] == (x,y):
+          temp_corners.append( (corner[0], True) )
+        else:
+          temp_corners.append( (corner[0], corner[1]) )
+
       if not self.walls[nextx][nexty]:
-        successors.append( ((nextx, nexty), action, cost) )
+        successors.append( ( ((nextx, nexty),(temp_corners[0], 
+                                              temp_corners[1], 
+                                              temp_corners[2], 
+                                              temp_corners[3]) ), action, cost) )
       
     self._expanded += 1
     return successors
@@ -371,6 +390,7 @@ def cornersHeuristic(state, problem):
   walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
   
   "*** YOUR CODE HERE ***"
+  
   return 0 # Default to trivial solution
 
 class AStarCornersAgent(SearchAgent):
