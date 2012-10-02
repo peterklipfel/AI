@@ -333,14 +333,10 @@ class CornersProblem(search.SearchProblem):
 
       "*** YOUR CODE HERE ***"
       
-      # print "state"
-      # print state
       x, y = state[0]
       dx, dy = Actions.directionToVector(action)
       nextx, nexty = int(x+dx), int(y+dy)
       cost = 1
-      # if (x, y) in self.corners:
-      #   self.explored_corners[(x, y)] = True
       corners_visited = state[1]
       temp_corners = []
       for corner in corners_visited:
