@@ -501,30 +501,36 @@ class ClosestDotSearchAgent(SearchAgent):
     start = (start, "none", 0)
     frontier = []
     visited = []
+    frontier.insert(0, start)
 
     child_to_parent = {}
 
     while frontier:
-      print "1"
       current_node = frontier.pop()
       visited.append(current_node)
+      if current_node[0] != (19,3) and current_node != (19.2):
+        print current_node
       children = problem.getSuccessors(current_node[0])
-      print "2"
       for child in children:
         if child not in visited:
           child_to_parent[child] = current_node
           frontier.insert(0, child)
-      print "3"
-      if problem.isGoalState(current_node[0]):
-        directions = []
-        path_node = current_node
-        while path_node != start:
-          new_node = child_to_parent[path_node]
-          path_node = new_node
-          directions.insert(0, path_node[1])
-        directions.pop(0)
-        print directions
-        return directions
+          if problem.isGoalState(child[0]):
+            directions = []
+            path_node = child
+            while path_node != start:
+              directions.insert(0, path_node[1])
+              # print directions
+              new_node = child_to_parent[path_node]
+              path_node = new_node
+              # print directions
+            # first_direction = directions[0][1]
+            # if first_direction == "none":
+            #   directions.pop(0)
+            # print directions
+            return directions
+    print "no more frontier"
+    return []
 
   
 class AnyFoodSearchProblem(PositionSearchProblem):
