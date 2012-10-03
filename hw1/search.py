@@ -199,37 +199,70 @@ def breadthFirstSearch(problem):
 def uniformCostSearch(problem):
   "Search the node of least total cost first. "
   "*** YOUR CODE HERE ***"
-  frontier = util.PriorityQueue()
+    distance = 0
+  ##enodes keeps track of all the information of a given node
+  ##Direction, Parent, Calculated heuristic, children, distance
+  enodes = {}
+  ##Checks to see what is and isn't a goalstate
   start = problem.getStartState()
-  start = (start, "none", 99999999)
-  visited = []
-  child_to_parent = {}
-  frontier.push(start, start[2])
-  while frontier:
-    current_node = frontier.pop()
-    children = problem.getSuccessors(current_node[0])
+  current = start
+  enodes[current] = ['Startoo','Startoo', -1, [], distance]
+  toCheck = []
+  nlist = []
+  nlist.append(current)
 
-    for child in children:
-      if child not in visited:
-        child_to_parent[child] = current_node
-        frontier.push(child, child[2])
-        visited.append(child)
+  while True:
+    expanded = problem.getSuccessors(current)
+    ##Increment distance for the algorithm
+    ##distance = distance + 1
+    ##Sets it to the program knows this node is expanded, will prevent any double expansions
+    enodes[current][2] = -1
 
-    if problem.isGoalState(current_node[0]):
-      directions = []
-      path_node = current_node
-      directions.insert(0, path_node[1])
-      while path_node != start:
-        new_node = child_to_parent[path_node]
-        path_node = new_node
-        directions.insert(0,path_node[1])
-      directions.pop(0) # this is to get rid of the start "none" direction
-      print directions
-      return directions
+    ##Format the enodes dictionary and add the children nodes as well as various other information
+    for nodes in expanded:
+      if nodes[0] not in nlist:
+        nlist.append(current)
+        distance = nodes[2]
+        enodes[nodes[0]] = [nodes[1], current, distance, [], distance]
+        enodes[current][3] += [nodes[0]]
+        toCheck += [nodes[0]]
 
+    ##Checks the nodes to see if they are the goal state, if not then expand another node
+    for nodes in toCheck:
+      nodes = toCheck.pop()
+      #if nodes not in ngs:
+      if problem.isGoalState(nodes):
+         ##Generate the path from the goal node to the start node
+        temp = []
+        path = []
+        while True:
+          temp = enodes[nodes]
+          if(temp[0] != 'Startoo'):
+            path.append(temp[0])
+          else:
+            break
+          nodes = temp[1]
 
-  return []
+        path.reverse()
+        return path
+        #else:
+        #  ngs += [nodes]
 
+    ##Get the best node for expansion
+    ##Temporary variable to store the heuristic size
+    temp = 0
+    for nodes, stuff in enodes.iteritems():
+      if(stuff[2] != -1):
+        if temp == 0:
+          temp = stuff[2]
+          current = nodes
+          distance = stuff[4]
+        elif stuff[2] < temp:
+          temp = stuff[2]
+          current = nodes
+          distance = stuff[4]
+
+  return [w]
 
 def nullHeuristic(state, problem=None):
   """
