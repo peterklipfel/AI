@@ -169,12 +169,11 @@ def breadthFirstSearch(problem):
   start = problem.getStartState()
   # [(int, int), "string", int]
   start = (start, "none", 0)
-
-  frontier.insert(0, start)
+  current_node = start
 
   child_to_parent = {}
-  while frontier:
-    current_node = frontier.pop()
+  while True:
+    # current_node = frontier.pop()
     if problem.isGoalState(current_node[0]):
       directions = []
       path_node = current_node
@@ -193,6 +192,10 @@ def breadthFirstSearch(problem):
         child_to_parent[child] = current_node
         frontier.insert(0, child)
         visited.append(child)
+    if frontier:
+      current_node = frontier.pop() 
+    else:
+      return []
       
   return []
 
@@ -207,13 +210,13 @@ def uniformCostSearch(problem):
   frontier.push(start, start[2])
   while frontier:
     current_node = frontier.pop()
-    visited.append(current_node)
     children = problem.getSuccessors(current_node[0])
 
     for child in children:
       if child not in visited:
         child_to_parent[child] = current_node
         frontier.push(child, child[2])
+        visited.append(child)
 
     if problem.isGoalState(current_node[0]):
       directions = []

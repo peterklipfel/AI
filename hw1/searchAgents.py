@@ -324,7 +324,7 @@ class CornersProblem(search.SearchProblem):
     
     x, y = state[0]
     corners_visited = list(state[1])
-    print state
+    # print state
     temp_corners = []
     successors = []
     num_true = 0
