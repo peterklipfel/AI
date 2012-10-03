@@ -324,7 +324,6 @@ class CornersProblem(search.SearchProblem):
     
     x, y = state[0]
     corners_visited = list(state[1])
-    # print state
     temp_corners = []
     successors = []
     num_true = 0
@@ -391,9 +390,10 @@ def cornersHeuristic(state, problem):
   "*** YOUR CODE HERE ***"
   
     # Default to trivial solution
-  xy1 = position
-  xy2 = problem.goal
-  return abs(xy1[0] - xy2[0]) + abs(xy1[1] - xy2[1])
+  # xy1 = position
+  # xy2 = problem.goal
+  # return abs(xy1[0] - xy2[0]) + abs(xy1[1] - xy2[1])
+  return 0
 
 
 class AStarCornersAgent(SearchAgent):
