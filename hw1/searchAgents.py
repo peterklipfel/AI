@@ -322,7 +322,19 @@ class CornersProblem(search.SearchProblem):
      cost of expanding to that successor
     """
     
+    x, y = state[0]
+    corners_visited = list(state[1])
+    print state
+    temp_corners = []
     successors = []
+    num_true = 0
+    for corner in corners_visited:
+      if corner[0] == (x,y):
+        temp_corners.append( (corner[0], True) )
+        num_true = num_true + 1
+      else:
+        temp_corners.append( (corner[0], corner[1]) )
+
     for action in [Directions.NORTH, Directions.SOUTH, Directions.EAST, Directions.WEST]:
       # Add a successor state to the successor list if the action is legal
       # Here's a code snippet for figuring out whether a new position hits a wall:
@@ -333,24 +345,15 @@ class CornersProblem(search.SearchProblem):
 
       "*** YOUR CODE HERE ***"
       
-      x, y = state[0]
       dx, dy = Actions.directionToVector(action)
       nextx, nexty = int(x+dx), int(y+dy)
       cost = 1
-      corners_visited = state[1]
-      temp_corners = []
-      for corner in corners_visited:
-        if corner[0] == (x,y):
-          temp_corners.append( (corner[0], True) )
-        else:
-          temp_corners.append( (corner[0], corner[1]) )
 
       if not self.walls[nextx][nexty]:
         successors.append( ( ((nextx, nexty),(temp_corners[0], 
                                               temp_corners[1], 
                                               temp_corners[2], 
                                               temp_corners[3]) ), action, cost) )
-      
     self._expanded += 1
     return successors
 
@@ -387,7 +390,11 @@ def cornersHeuristic(state, problem):
   
   "*** YOUR CODE HERE ***"
   
-  return 0 # Default to trivial solution
+    # Default to trivial solution
+  xy1 = position
+  xy2 = problem.goal
+  return abs(xy1[0] - xy2[0]) + abs(xy1[1] - xy2[1])
+
 
 class AStarCornersAgent(SearchAgent):
   "A SearchAgent for FoodSearchProblem using A* and your foodHeuristic"
