@@ -499,21 +499,24 @@ def foodHeuristic(state, problem):
   "*** YOUR CODE HERE ***"
   food_points=foodGrid.asList()
   dist_between_farthest_foods = 0
-  dist_position_to_closest_food = None
+
   for food1 in food_points:
     for food2 in food_points:
-      if (food1, food2) in problem.heuristicInfo:
-        dist_food1_to_food2 = problem.heuristicInfo[(food1, food2)]
-        if dist_food1_to_food2 > dist_between_farthest_foods:
-          dist_between_farthest_foods = dist_food1_to_food2
-      elif (food2, food1) in problem.heuristicInfo:
-        if problem.heuristicInfo[(food2, food1)] > dist_between_farthest_foods:
-          dist_between_farthest_foods = problem.heuristicInfo[(food2, food1)]
+      if (food2, food1) in problem.heuristicInfo:
+        dist = problem.heuristicInfo[(food2, food1)]
+        if dist > dist_between_farthest_foods:
+          dist_between_farthest_foods = dist
+
+      elif (food1, food2) in problem.heuristicInfo:
+        dist = problem.heuristicInfo[(food1, food2)]
+        if dist > dist_between_farthest_foods:
+          dist_between_farthest_foods = dist
+
       else:
         problem.heuristicInfo[(food1, food2)] = mazeDistance(food1, food2, problem.startingGameState)
-        dist_food1_to_food2 = problem.heuristicInfo[(food1, food2)]
-        if dist_food1_to_food2 > dist_between_farthest_foods:
-          dist_between_farthest_foods = dist_food1_to_food2
+        dist = problem.heuristicInfo[(food1, food2)]
+        if dist > dist_between_farthest_foods:
+          dist_between_farthest_foods = dist
 
   heuristicValue = dist_between_farthest_foods
 
