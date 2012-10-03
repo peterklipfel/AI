@@ -199,7 +199,7 @@ def breadthFirstSearch(problem):
 def uniformCostSearch(problem):
   "Search the node of least total cost first. "
   "*** YOUR CODE HERE ***"
-    distance = 0
+  distance = 0
   ##enodes keeps track of all the information of a given node
   ##Direction, Parent, Calculated heuristic, children, distance
   enodes = {}
