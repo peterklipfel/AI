@@ -512,21 +512,8 @@ def foodHeuristic(state, problem):
         problem.heuristicInfo[(food1, food2)] = mazeDistance(food1, food2, problem.startingGameState)
         if problem.heuristicInfo[(food1, food2)] > dist_between_extreme_foods:
           dist_between_extreme_foods = problem.heuristicInfo[(food1, food2)]
-  # for food in food_points:
-  #   if (position, food) in problem.heuristicInfo:
-  #     if dist_position_to_closest_food == None or dist_position_to_closest_food > problem.heuristicInfo[(position, food)]:
-  #       dist_position_to_closest_food = problem.heuristicInfo[(position, food)]
-  #   elif (food, position) in problem.heuristicInfo:
-  #     if dist_position_to_closest_food == None or dist_position_to_closest_food > problem.heuristicInfo[(food, position)]:
-  #       dist_position_to_closest_food = problem.heuristicInfo[(food, position)]
-  #   else:
-  #     problem.heuristicInfo[(position, food)] = mazeDistance(position, food, problem.startingGameState)
-  #     if dist_position_to_closest_food == None or dist_position_to_closest_food > problem.heuristicInfo[(position, food)]:
-  #       dist_position_to_closest_food = problem.heuristicInfo[(position, food)]
-  # if dist_position_to_closest_food == None:
-  #   dist_position_to_closest_food = 0
-  
-  heuristicValue = dist_between_extreme_foods #+ dist_position_to_closest_food
+
+  heuristicValue = dist_between_extreme_foods
 
   return heuristicValue
 
