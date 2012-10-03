@@ -336,6 +336,7 @@ def aStarSearch(problem, heuristic=nullHeuristic):
           current = nodes
           distance = stuff[4]
 
+  print w
   return [w]
     
   

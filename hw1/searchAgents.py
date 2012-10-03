@@ -497,16 +497,46 @@ def foodHeuristic(state, problem):
   """
   position, foodGrid = state
   "*** YOUR CODE HERE ***"
-  food_weight = 0
-  wall_weight = 0
-  for food_piece in foodGrid.asList():
-    dist = abs(food_piece[0]-position[0]) + abs(food_piece[1]-position[1])
-    if dist > food_weight:
-      food_weight = dist
-    for wall in problem.walls.asList():
-      wall_weight =  wall_weight + abs(food_piece[0]-wall[0]) + abs(food_piece[1]-wall[1])
+  food_points=foodGrid.asList()
+  dist_between_extreme_foods = 0
+  dist_position_to_closest_food = None
+  for food1 in food_points:
+    for food2 in food_points:
+      if (food1, food2) in problem.heuristicInfo:
+        if problem.heuristicInfo[(food1, food2)] > dist_between_extreme_foods:
+          dist_between_extreme_foods = problem.heuristicInfo[(food1, food2)]
+      elif (food2, food1) in problem.heuristicInfo:
+        if problem.heuristicInfo[(food2, food1)] > dist_between_extreme_foods:
+          dist_between_extreme_foods = problem.heuristicInfo[(food2, food1)]
+      else:
+        problem.heuristicInfo[(food1, food2)] = mazeDistance(food1, food2, problem.startingGameState)
+        if problem.heuristicInfo[(food1, food2)] > dist_between_extreme_foods:
+          dist_between_extreme_foods = problem.heuristicInfo[(food1, food2)]
+  # for food in food_points:
+  #   if (position, food) in problem.heuristicInfo:
+  #     if dist_position_to_closest_food == None or dist_position_to_closest_food > problem.heuristicInfo[(position, food)]:
+  #       dist_position_to_closest_food = problem.heuristicInfo[(position, food)]
+  #   elif (food, position) in problem.heuristicInfo:
+  #     if dist_position_to_closest_food == None or dist_position_to_closest_food > problem.heuristicInfo[(food, position)]:
+  #       dist_position_to_closest_food = problem.heuristicInfo[(food, position)]
+  #   else:
+  #     problem.heuristicInfo[(position, food)] = mazeDistance(position, food, problem.startingGameState)
+  #     if dist_position_to_closest_food == None or dist_position_to_closest_food > problem.heuristicInfo[(position, food)]:
+  #       dist_position_to_closest_food = problem.heuristicInfo[(position, food)]
+  # if dist_position_to_closest_food == None:
+  #   dist_position_to_closest_food = 0
+  
+  heuristicValue = dist_between_extreme_foods #+ dist_position_to_closest_food
 
-  return food_weight + wall_weight
+  return heuristicValue
+
+def getNumWalls(walls, ll, ur):
+  numWalls = 0
+  for i in range(ll[0], ur[0]):
+    for j in range(ll[1], ur[1]):
+      if (walls[i][j]):
+        numWalls = numWalls + 1
+  return numWalls
 
 class ClosestDotSearchAgent(SearchAgent):
   "Search for all food using a sequence of searches"
