@@ -499,7 +499,10 @@ def foodHeuristic(state, problem):
   "*** YOUR CODE HERE ***"
   food_points=foodGrid.asList()
   dist_between_farthest_foods = 0
-
+  """
+    Originally this used a dictionary, but it was really slow.
+    Why is their dictionary faster?
+  """
   for food1 in food_points:
     for food2 in food_points:
       if (food2, food1) in problem.heuristicInfo:
@@ -518,9 +521,7 @@ def foodHeuristic(state, problem):
         if dist > dist_between_farthest_foods:
           dist_between_farthest_foods = dist
 
-  heuristicValue = dist_between_farthest_foods
-
-  return heuristicValue
+  return dist_between_farthest_foods
 
 
 class ClosestDotSearchAgent(SearchAgent):
