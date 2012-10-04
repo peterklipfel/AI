@@ -179,19 +179,19 @@ def breadthFirstSearch(problem):
     for child in children:
       if child not in visited:
         child_to_parent[child] = current_node
+        if problem.isGoalState(child[0]):
+          directions = []
+          path_node = child
+          directions.insert(0, path_node[1])
+          while path_node != start:
+            new_node = child_to_parent[path_node]
+            path_node = new_node
+            directions.insert(0,path_node[1])
+          directions.pop(0) # this is to get rid of the start "none" direction
+          # print directions
+          return directions
         frontier.insert(0, child)
         visited.append(child)
-      if problem.isGoalState(child[0]):
-        directions = []
-        path_node = child
-        directions.insert(0, path_node[1])
-        while path_node != start:
-          new_node = child_to_parent[path_node]
-          path_node = new_node
-          directions.insert(0,path_node[1])
-        directions.pop(0) # this is to get rid of the start "none" direction
-        # print directions
-        return directions
     
       
   return []
@@ -336,7 +336,6 @@ def aStarSearch(problem, heuristic=nullHeuristic):
           current = nodes
           distance = stuff[4]
 
-  print w
   return [w]
     
   

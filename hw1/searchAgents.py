@@ -281,14 +281,6 @@ class CornersProblem(search.SearchProblem):
     self.explored_corners = {}
     for corner in self.corners:
       self.explored_corners[corner] = False
-    self.current_path = []
-    
-
-  def checked_everywhere(self):
-    for corner in self.corners:
-      if corner not in self.current_path:
-        return False
-    return True
     
   def getStartState(self):
     "Returns the start state (in your state space, not the full Pacman state space)"
@@ -333,6 +325,9 @@ class CornersProblem(search.SearchProblem):
         num_true = num_true + 1
       else:
         temp_corners.append( (corner[0], corner[1]) )
+    if num_true > 3:
+      print "num true"
+      print num_true
 
     for action in [Directions.NORTH, Directions.SOUTH, Directions.EAST, Directions.WEST]:
       # Add a successor state to the successor list if the action is legal
@@ -500,8 +495,7 @@ def foodHeuristic(state, problem):
   food_points=foodGrid.asList()
   dist_between_farthest_foods = 0
   """
-    Originally this used a dictionary, but it was really slow.
-    Why is their dictionary faster?
+    Yay for O(1) time complexity for searching dictionaries in python!
   """
   for food1 in food_points:
     for food2 in food_points:
