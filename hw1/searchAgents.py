@@ -316,18 +316,7 @@ class CornersProblem(search.SearchProblem):
     
     x, y = state[0]
     corners_visited = list(state[1])
-    temp_corners = []
     successors = []
-    num_true = 0
-    for corner in corners_visited:
-      if corner[0] == (x,y):
-        temp_corners.append( (corner[0], True) )
-        num_true = num_true + 1
-      else:
-        temp_corners.append( (corner[0], corner[1]) )
-    if num_true > 3:
-      print "num true"
-      print num_true
 
     for action in [Directions.NORTH, Directions.SOUTH, Directions.EAST, Directions.WEST]:
       # Add a successor state to the successor list if the action is legal
@@ -339,11 +328,17 @@ class CornersProblem(search.SearchProblem):
 
       "*** YOUR CODE HERE ***"
       
+      temp_corners = []
       dx, dy = Actions.directionToVector(action)
       nextx, nexty = int(x+dx), int(y+dy)
       cost = 1
 
       if not self.walls[nextx][nexty]:
+        for corner in corners_visited:
+          if corner[0] == (nextx,nexty):
+            temp_corners.append( (corner[0], True) )
+          else:
+            temp_corners.append( (corner[0], corner[1]) )
         successors.append( ( ((nextx, nexty),(temp_corners[0], 
                                               temp_corners[1], 
                                               temp_corners[2], 
@@ -399,7 +394,8 @@ def cornersHeuristic(state, problem):
     cost = max(distances)
   else:
     cost = 0
-  return cost
+  return 0
+  # return cost
 
 
 
