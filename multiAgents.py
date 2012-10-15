@@ -38,12 +38,15 @@ class ReflexAgent(Agent):
     # Choose one of the best actions
     scores = [self.evaluationFunction(gameState, action) for action in legalMoves]
     bestScore = max(scores)
-    print legalMoves
+    # print legalMoves
     bestIndices = [index for index in range(len(scores)) if scores[index] == bestScore]
-    # chosenIndex = random.choice(bestIndices) # Pick randomly among the best
-    chosenIndex = bestIndices[0]
-    print chosenIndex
+    chosenIndex = random.choice(bestIndices) # Pick randomly among the best
+    # chosenIndex = bestIndices[0]
+    # print chosenIndex
     "Add more of your code here if you want to"
+    print '###################################################################'
+    print legalMoves[chosenIndex]
+    print '###################################################################'
     return legalMoves[chosenIndex]
 
   def evaluationFunction(self, currentGameState, action):
@@ -67,22 +70,27 @@ class ReflexAgent(Agent):
     oldFood = currentGameState.getFood()
     newGhostStates = successorGameState.getGhostStates()
     newScaredTimes = [ghostState.scaredTimer for ghostState in newGhostStates]
+    # ['__doc__', '__eq__', '__hash__', '__init__', '__module__', '__str__', 'data', 'deepCopy', 'generatePacmanSuccessor', 'generateSuccessor', 'getCapsules', 'getFood', 
+    # 'getGhostPosition', 'getGhostPositions', 'getGhostState', 'getGhostStates', 'getLegalActions', 'getLegalPacmanActions', 'getNumAgents', 'getNumFood', 'getPacmanPosition', 
+    # 'getPacmanState', 'getScore', 'getWalls', 'hasFood', 'hasWall', 'initialize', 'isLose', 'isWin']
 
     "*** YOUR CODE HERE ***"
     # print dir(newGhostStates)
     score = 0
+    # print "in"
+    # print dir(successorGameState)
+    # if successorGameState.isLose:
+    #   print "lose"
+    #   return 0
+      
     for state in newGhostStates:
-      if not state.isPacman:
-        # print state.getPosition()[0]
-        # print state.getPosition()[1]
-        # print newPos
-        manhattan = abs(state.getPosition()[0] - newPos[1]) + abs(state.getPosition()[1] - newPos[1])
-        score = score + manhattan
-        # ['__doc__', '__eq__', '__hash__', '__init__', '__module__', '__str__', 'configuration', 'copy', 'getDirection', 'getPosition', 'isPacman', 'scaredTimer', 'start']
-      else:
-        print "me! ---------------------------"
-    # return 0
-    # print score
+      manhattan = abs(state.getPosition()[0] - newPos[0]) + abs(state.getPosition()[1] - newPos[1])
+      score = score + manhattan
+      # ['__doc__', '__eq__', '__hash__', '__init__', '__module__', '__str__', 'configuration', 'copy', 'getDirection', 'getPosition', 'isPacman', 'scaredTimer', 'start']
+      print state
+      print newPos
+      print manhattan
+    print "--------------"
     return score
     # return successorGameState.getScore()
 
