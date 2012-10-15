@@ -34,6 +34,7 @@ class ReflexAgent(Agent):
     """
     # Collect legal moves and successor states
     legalMoves = gameState.getLegalActions()
+    legalMoves.remove("Stop")
 
     # Choose one of the best actions
     scores = [self.evaluationFunction(gameState, action) for action in legalMoves]
@@ -45,8 +46,9 @@ class ReflexAgent(Agent):
     # print chosenIndex
     "Add more of your code here if you want to"
     print '###################################################################'
-    print legalMoves[chosenIndex]
+    print "chosen action:  " + str(legalMoves[chosenIndex])
     print '###################################################################'
+
     return legalMoves[chosenIndex]
 
   def evaluationFunction(self, currentGameState, action):
@@ -66,30 +68,58 @@ class ReflexAgent(Agent):
     """
     # Useful information you can extract from a GameState (pacman.py)
     successorGameState = currentGameState.generatePacmanSuccessor(action)
+    # ['__doc__', '__eq__', '__hash__', '__init__', '__module__', '__str__', 'data', 'deepCopy', 'generatePacmanSuccessor', 'generateSuccessor', 'getCapsules', 'getFood', 
+    # 'getGhostPosition', 'getGhostPositions', 'getGhostState', 'getGhostStates', 'getLegalActions', 'getLegalPacmanActions', 'getNumAgents', 'getNumFood', 'getPacmanPosition', 
+    # 'getPacmanState', 'getScore', 'getWalls', 'hasFood', 'hasWall', 'initialize', 'isLose', 'isWin']
     newPos = successorGameState.getPacmanPosition()
     oldFood = currentGameState.getFood()
     newGhostStates = successorGameState.getGhostStates()
     newScaredTimes = [ghostState.scaredTimer for ghostState in newGhostStates]
-    # ['__doc__', '__eq__', '__hash__', '__init__', '__module__', '__str__', 'data', 'deepCopy', 'generatePacmanSuccessor', 'generateSuccessor', 'getCapsules', 'getFood', 
-    # 'getGhostPosition', 'getGhostPositions', 'getGhostState', 'getGhostStates', 'getLegalActions', 'getLegalPacmanActions', 'getNumAgents', 'getNumFood', 'getPacmanPosition', 
-    # 'getPacmanState', 'getScore', 'getWalls', 'hasFood', 'hasWall', 'initialize', 'isLose', 'isWin']
 
     "*** YOUR CODE HERE ***"
-    # print dir(newGhostStates)
-    score = 0
-    # print "in"
-    # print dir(successorGameState)
-    # if successorGameState.isLose:
-    #   print "lose"
-    #   return 0
-      
+    # stuff = dir(successorGameState.data.food)
+    # ['CELLS_PER_INT', '__doc__', '__eq__', '__getitem__', '__hash__', '__init__', '__module__', '__setitem__', '__str__', '_cellIndexToPosition', '_unpackBits', '_unpackInt', 
+    # 'asList', 'copy', 'count', 'data', 'deepCopy', 'height', 'packBits', 'shallowCopy', 'width']
+   
+    # stuff = successorGameState.data.food.asList()
+    # print stuff
+    # print newPos
+    print "pacman pos:  " + str(newPos)
+    score = 1
+    if successorGameState.isLose():
+      print "lose"
+      return 0
+    if successorGameState.isWin():
+      print "win"
+      return 99999
+    ghost_closeness = []
     for state in newGhostStates:
       manhattan = abs(state.getPosition()[0] - newPos[0]) + abs(state.getPosition()[1] - newPos[1])
-      score = score + manhattan
+      # score = score + manhattan
+      ghost_closeness.append(manhattan)
       # ['__doc__', '__eq__', '__hash__', '__init__', '__module__', '__str__', 'configuration', 'copy', 'getDirection', 'getPosition', 'isPacman', 'scaredTimer', 'start']
-      print state
-      print newPos
-      print manhattan
+      print "     " + str(state)
+      print "manhattan :  " + str(manhattan)
+    closest_ghost_distance = min(ghost_closeness)
+    if closest_ghost_distance <= 1:
+      return 0
+    length = len(successorGameState.data.food.asList())
+    food_distances = []
+    for food in successorGameState.data.food.asList():
+      manhattan = abs(food[0] - newPos[0]) + abs(food[1] - newPos[1])
+      food_distances.append(manhattan)
+      # print general_food_direction_score
+    
+    closest_food = min(food_distances)
+
+    if closest_food <= 1:
+      print "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+      return 99999
+    else:
+      score = 50/closest_food
+
+    print "--------------"
+    print "score: " + str(score)
     print "--------------"
     return score
     # return successorGameState.getScore()
