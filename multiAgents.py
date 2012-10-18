@@ -77,46 +77,50 @@ class ReflexAgent(Agent):
     newScaredTimes = [ghostState.scaredTimer for ghostState in newGhostStates]
 
     "*** YOUR CODE HERE ***"
-    # stuff = dir(successorGameState.data.food)
+    # dir(successorGameState.data.food) =>
     # ['CELLS_PER_INT', '__doc__', '__eq__', '__getitem__', '__hash__', '__init__', '__module__', '__setitem__', '__str__', '_cellIndexToPosition', '_unpackBits', '_unpackInt', 
     # 'asList', 'copy', 'count', 'data', 'deepCopy', 'height', 'packBits', 'shallowCopy', 'width']
-   
-    # stuff = successorGameState.data.food.asList()
-    # print stuff
-    # print newPos
+
     print "pacman pos:  " + str(newPos)
-    score = 1
+    score = 0
+
+# if the next move is a lose, don't go there
     if successorGameState.isLose():
       print "lose"
       return 0
+# if the next move is a win, go there
     if successorGameState.isWin():
       print "win"
       return 99999
+
+# calculate how close the ghosts are
+# this is not being used currently
     ghost_closeness = []
     for state in newGhostStates:
       manhattan = abs(state.getPosition()[0] - newPos[0]) + abs(state.getPosition()[1] - newPos[1])
-      # score = score + manhattan
       ghost_closeness.append(manhattan)
-      # ['__doc__', '__eq__', '__hash__', '__init__', '__module__', '__str__', 'configuration', 'copy', 'getDirection', 'getPosition', 'isPacman', 'scaredTimer', 'start']
-      print "     " + str(state)
-      print "manhattan :  " + str(manhattan)
+      # print "     " + str(state)
+      # print "manhattan :  " + str(manhattan)
     closest_ghost_distance = min(ghost_closeness)
     if closest_ghost_distance <= 1:
       return 0
-    length = len(successorGameState.data.food.asList())
+
+# find the manhattan distance to all food
     food_distances = []
     for food in successorGameState.data.food.asList():
       manhattan = abs(food[0] - newPos[0]) + abs(food[1] - newPos[1])
       food_distances.append(manhattan)
-      # print general_food_direction_score
-    
-    closest_food = min(food_distances)
 
-    if closest_food <= 1:
-      print "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-      return 99999
-    else:
-      score = 50/closest_food
+    closest_food = min(food_distances)
+    game_score = currentGameState.getScore()
+    next_score = successorGameState.getScore()
+    if next_score > game_score:
+      return 50 + (next_score-game_score)
+
+    print str(newPos) + " -- " + str(successorGameState.data.food.asList())
+
+# cap the score at 50, but weight up to it for how close the next food is
+    score = 50/closest_food
 
     print "--------------"
     print "score: " + str(score)
