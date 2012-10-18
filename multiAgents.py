@@ -32,18 +32,16 @@ class ReflexAgent(Agent):
     Just like in the previous project, getAction takes a GameState and returns
     some Directions.X for some X in the set {North, South, West, East, Stop}
     """
-    # Collect legal moves and successor states
+# Collect legal moves and successor states
     legalMoves = gameState.getLegalActions()
     legalMoves.remove("Stop")
 
-    # Choose one of the best actions
+# Choose one of the best actions
     scores = [self.evaluationFunction(gameState, action) for action in legalMoves]
     bestScore = max(scores)
-    # print legalMoves
     bestIndices = [index for index in range(len(scores)) if scores[index] == bestScore]
     chosenIndex = random.choice(bestIndices) # Pick randomly among the best
-    # chosenIndex = bestIndices[0]
-    # print chosenIndex
+
     "Add more of your code here if you want to"
     print '###################################################################'
     print "chosen action:  " + str(legalMoves[chosenIndex])
@@ -184,7 +182,21 @@ class MinimaxAgent(MultiAgentSearchAgent):
         Returns the total number of agents in the game
     """
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    if gameState.isWin or self.depth <= 0:
+      return self.evaluationFunction
+    print self.depth
+
+    for agent_index in range(0,gameState.getNumAgents()):
+      action_costs = {}
+      for action in gameState.getLegalActions(agent_index):
+        next_state = gameState.generateSuccessor(agent_index, action)
+        print next_state
+    # Recursive call
+        cost = getAction(next_state)
+    # --------------
+      print action_costs
+    return Directions.STOP
+
 
 class AlphaBetaAgent(MultiAgentSearchAgent):
   """
