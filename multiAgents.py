@@ -215,6 +215,21 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
     Your expectimax agent (question 4)
   """
 
+  def maxVal(self, gameState, depth):
+    if depth == 0 or gameState.isLose() or gameState.isWin():
+      return self.evaluationFunction(gameState)
+    val = []
+    actions = gameState.getLegalActions()
+    if Directions.STOP in actions:
+      actions.remove(Directions.STOP)
+      #Get value (minVal)
+
+  def minVal(self, gameState, depth):
+    if depth == 0 or gameState.isLose() or gameState.isWin():
+      return self.evaluationFunction(gameState)
+    #Ghost...get possible value (maxVal)
+    
+
   def getAction(self, gameState):
     """
       Returns the expectimax action using self.depth and self.evaluationFunction
