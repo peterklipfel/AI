@@ -214,15 +214,17 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
   """
     Your expectimax agent (question 4)
   """
-
   def maxVal(self, gameState, depth):
+    myScore = []
     if depth == 0 or gameState.isLose() or gameState.isWin():
       return self.evaluationFunction(gameState)
-    val = []
-    actions = gameState.getLegalActions()
-    if Directions.STOP in actions:
-      actions.remove(Directions.STOP)
-      #Get value (minVal)
+    actionList = gameState.getLegalActions()
+    if Directions.STOP in actionList:
+      actionList.remove(Directions.STOP)
+    for action in actionList:
+      myGameState = gameState.generatePacmanSuccessor(action)
+      myScore.append(self.minVal(depth, myGameState, 1))
+    return max(myScore)
 
   def minVal(self, gameState, depth):
     if depth == 0 or gameState.isLose() or gameState.isWin():
