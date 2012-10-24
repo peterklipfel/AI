@@ -182,24 +182,25 @@ class MinimaxAgent(MultiAgentSearchAgent):
         Returns the total number of agents in the game
     """
     "*** YOUR CODE HERE ***"
-    depth = depth*getNumAgents
-    def min_value(state, depth, agent):
+    initial_depth = self.depth*gameState.getNumAgents()
+    def min_value(state, depth, agent_index):
       if we_win or depth <= 0:
         return utitlity(state)
       value = float("infinity") 
-      for action in possible_actions:
+      next_agent_index = agent_index%state.getNumAgents()
+      for action in state.getLegalActions(agent_index):
         if next_agent is ghost:
-          value = min(value, max_value(next_state, depth-1, next_agent))
+          value = min(value, max_value(next_state, depth-1, next_agent_index))
         else:
-          value = min(value, min_value(next_state, depth-1, next_agent))
+          value = min(value, min_value(next_state, depth-1, next_agent_index))
       return value
         
 
-    def max_value(state, depth, agent):
-      if we_win or depth <= 0: # or lose
+    def max_value(state, depth, agent_index):
+      if we_win or depth <= 0:
         return utility(state)
       value = float("-infinity")
-      for action in possible_actions:
+      for action in state.getLegalActions(agent_index):
         if next_agent is ghost:
           value = max(value, min_value(next_state, depth-1, next_agent))
         else:
@@ -208,17 +209,12 @@ class MinimaxAgent(MultiAgentSearchAgent):
 
     # min_value should be a dictionary of costs to actions.  We don't care
     # which choice we make if the cost is the same, so a dictionary is acceptable
+    for pacman actions:
+      action = stop
+      if next_action is better than action:
+        action = next_action
     best_choice = max(min_value(all_actions))
-#     cost = 0
-#     action_costs = {}
-#     for agent_index in range(0,gameState.getNumAgents()):
-#       for action in gameState.getLegalActions(agent_index):
-#         next_state = gameState.generateSuccessor(agent_index, action)
-# #      Recursive call
-#         cost = max(cost,  self.getAction(next_state))
-# #      --------------
-#       action_costs[cost] = action
-#       print action_costs
+
     return Directions.STOP
 
 
