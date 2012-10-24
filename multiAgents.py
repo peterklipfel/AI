@@ -182,22 +182,43 @@ class MinimaxAgent(MultiAgentSearchAgent):
         Returns the total number of agents in the game
     """
     "*** YOUR CODE HERE ***"
-    print dir(gameState.getLegalActions)
-    if self.depth <= 0:
-      return self.evaluationFunction
+    depth = depth*getNumAgents
+    def min_value(state, depth, agent):
+      if we_win or depth <= 0:
+        return utitlity(state)
+      value = float("infinity") 
+      for action in possible_actions:
+        if next_agent is ghost:
+          value = min(value, max_value(next_state, depth-1, next_agent))
+        else:
+          value = min(value, min_value(next_state, depth-1, next_agent))
+      return value
+        
 
-    print self.depth
-    self.depth = self.depth - 1
+    def max_value(state, depth, agent):
+      if we_win or depth <= 0: # or lose
+        return utility(state)
+      value = float("-infinity")
+      for action in possible_actions:
+        if next_agent is ghost:
+          value = max(value, min_value(next_state, depth-1, next_agent))
+        else:
+          value = min(value, max_value(next_state, depth-1, next_agent))
+      return value
 
-    for agent_index in range(0,gameState.getNumAgents()):
-      action_costs = {}
-      for action in gameState.getLegalActions(agent_index):
-        next_state = gameState.generateSuccessor(agent_index, action)
-        # print next_state
-    # Recursive call
-        cost = self.getAction(next_state)
-    # --------------
-      # print action_costs
+    # min_value should be a dictionary of costs to actions.  We don't care
+    # which choice we make if the cost is the same, so a dictionary is acceptable
+    best_choice = max(min_value(all_actions))
+#     cost = 0
+#     action_costs = {}
+#     for agent_index in range(0,gameState.getNumAgents()):
+#       for action in gameState.getLegalActions(agent_index):
+#         next_state = gameState.generateSuccessor(agent_index, action)
+# #      Recursive call
+#         cost = max(cost,  self.getAction(next_state))
+# #      --------------
+#       action_costs[cost] = action
+#       print action_costs
     return Directions.STOP
 
 
