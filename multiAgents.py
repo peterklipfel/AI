@@ -182,40 +182,47 @@ class MinimaxAgent(MultiAgentSearchAgent):
         Returns the total number of agents in the game
     """
     "*** YOUR CODE HERE ***"
-    initial_depth = self.depth*gameState.getNumAgents()
     def min_value(state, depth, agent_index):
-      if we_win or depth <= 0:
-        return utitlity(state)
+      if depth <= 0 or state.isWin():
+        print "depth: " + str(depth)
+        return self.evaluationFunction(state)
       value = float("infinity") 
-      next_agent_index = agent_index%state.getNumAgents()
+      new_agent_index = (agent_index+1)%state.getNumAgents()
       for action in state.getLegalActions(agent_index):
-        if next_agent is ghost:
-          value = min(value, max_value(next_state, depth-1, next_agent_index))
+        if new_agent_index > 0: #then it's a ghost
+          value = min(value, max_value(gameState.generateSuccessor(agent_index, action), depth-1, new_agent_index))
         else:
-          value = min(value, min_value(next_state, depth-1, next_agent_index))
+          print "I'm pacman"
+          value = max(value, min_value(gameState.generateSuccessor(agent_index, action), depth-1, new_agent_index))
       return value
         
 
     def max_value(state, depth, agent_index):
-      if we_win or depth <= 0:
-        return utility(state)
+      if depth <= 0 or state.isWin():
+        print "depth: " + str(depth)
+        return self.evaluationFunction(state)
       value = float("-infinity")
+      new_agent_index = (agent_index+1)%state.getNumAgents()
       for action in state.getLegalActions(agent_index):
-        if next_agent is ghost:
-          value = max(value, min_value(next_state, depth-1, next_agent))
+        if new_agent_index > 0: #then it's a ghost
+          value = max(value, min_value(gameState.generateSuccessor(agent_index, action), depth-1, new_agent_index))
         else:
-          value = min(value, max_value(next_state, depth-1, next_agent))
+          print "I'm pacman"
+          value = min(value, max_value(gameState.generateSuccessor(agent_index, action), depth-1, new_agent_index))
       return value
 
-    # min_value should be a dictionary of costs to actions.  We don't care
-    # which choice we make if the cost is the same, so a dictionary is acceptable
-    for pacman actions:
-      action = stop
-      if next_action is better than action:
-        action = next_action
-    best_choice = max(min_value(all_actions))
+# begin search
+    initial_depth = self.depth*gameState.getNumAgents()
+    # check pacman states
+    best_action_cost = float("-infinity")
+    best_action = None
+    for action in gameState.getLegalActions(0):
+      action_cost = min_value(gameState, 4, 1)
+      if action_cost > best_action_cost:
+        best_action_cost = action_cost
+        best_action = action
 
-    return Directions.STOP
+    return action
 
 
 class AlphaBetaAgent(MultiAgentSearchAgent):
