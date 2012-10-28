@@ -226,7 +226,6 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
       myScore = max(self.expVal(myGameState, depth, 1), bestScore)
       if bestScore != myScore:
           bestScore = myScore
-      #myScore.append(self.minVal(depth, myGameState, 1))
     return myScore
 
   def expVal(self, gameState, depth, agent):
@@ -235,7 +234,6 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
     length = 0
     agentNum = gameState.getNumAgents() - 1
     actionList = gameState.getLegalActions(agent)
-    #for action in actionList:
     for action in actionList:
       length += 1
       nextState = gameState.generateSuccessor(agent,action)
