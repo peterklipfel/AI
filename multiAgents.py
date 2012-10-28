@@ -216,31 +216,34 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
   """
   def maxVal(self, gameState, depth):
     myScore = []
-    if depth == 0 or gameState.isLose() or gameState.isWin():
+    bestScore = -999999
+    if self.depth == depth or gameState.isLose() or gameState.isWin():
       return self.evaluationFunction(gameState)
-    actionList = gameState.getLegalActions()
-    if Directions.STOP in actionList:
-      actionList.remove(Directions.STOP)
+    actionList = gameState.getLegalPacmanActions()
+    actionList.remove(Directions.STOP)
     for action in actionList:
       myGameState = gameState.generatePacmanSuccessor(action)
-      myScore.append(self.minVal(depth, myGameState, 1))
-    return max(myScore)
+      myScore = max(self.expVal(myGameState, depth, 1), bestScore)
+      if bestScore != myScore:
+          bestScore = myScore
+      #myScore.append(self.minVal(depth, myGameState, 1))
+    return myScore
 
-  def minVal(self, gameState, depth, agent):
-    if depth == 0 or gameState.isLose() or gameState.isWin():
+  def expVal(self, gameState, depth, agent):
+    if (self.depth == depth or gameState.isLose() or gameState.isWin()):
       return self.evaluationFunction(gameState)
-    agentNum = gameState.getNumAgents()
+    length = 0
+    agentNum = gameState.getNumAgents() - 1
     actionList = gameState.getLegalActions(agent)
+    #for action in actionList:
     for action in actionList:
-      nextState = gameState.generateSuccessor(agent, action)
-    if agent == agentNum:
-      for myState in nextState:
-        scores = self.maxVal(myState, depth + 1)
-    elif agent <= agentNum:
-      for myState in nextState:
-        scores = self.minVal(myState, depth, agent + 1)
-    return sum(scores)/len(scores)
-    #Ghost...get possible value (maxVal)
+      length += 1
+      nextState = gameState.generateSuccessor(agent,action)
+      if agent == agentNum:
+        scores = self.maxVal(nextState, depth + 1)
+      elif agent <  agentNum:
+        scores = self.expVal(nextState, depth, agent + 1)
+    return scores/length
     
 
   def getAction(self, gameState):
@@ -253,17 +256,16 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
     "*** YOUR CODE HERE ***"
     pacmanActions = gameState.getLegalPacmanActions()
     pacmanActions.remove(Directions.STOP)
-    #for action in pacmanActions:
-    nextState = [gameState.generatePacmanSuccessor(action) for action in pacmanActions]
-    #for myState in nextState:
-    scores = [self.minVal(myState, 0, 1) for myState in nextState]
-    topScore = max(scores)
-    # for i in range(0,len(scores)):
-    #   if scores[i] == topScore:
-    #     bestChoices = i
-    bestChoices = [index for index in range(len(scores)) if scores[index] == topScore]
-    chosen = random.choice(bestChoices)
-    return pacmanActions[chosen]
+    bestScore = -999999;
+    scores = {}
+    for action in pacmanActions:
+      nextState = gameState.generatePacmanSuccessor(action)
+      score = max(self.expVal(nextState, 0, 1), bestScore)
+      scores[score] = action
+    for score in scores.keys():
+      bestScore = max(score, bestScore)
+    bestAction = scores[bestScore]
+    return bestAction
    
                      
               
