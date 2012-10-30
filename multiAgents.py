@@ -303,53 +303,56 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
 
   def getAction(self, gameState):
     v = float('-inf')
-    next_action = Directions.STOP
+    nextAction = Directions.STOP
+    actions = gameState.getLegalPacmanActions()
 
-    for action in gameState.getLegalActions(0):
-      exp_val = self.expected_value(0, 1, gameState.generateSuccessor(0, action))
+    for action in actions:
+      expVal = self.expVal(0, 1, gameState.generatePacmanSuccessor(action))
 
-      if (exp_val > v) and (action != Directions.STOP):
-        v = exp_val
-        next_action = action
+      if (expVal > v) and (action != Directions.STOP):
+        v = expVal
+        nextAction = action
 
-    return next_action
+    return nextAction
               
 
-  def max_value(self, depth, agent, state):
+  def maxVal(self, depth, gameState):
+    #removed agent from the function head, called PacmanActions
+    #removed else statement after this
     if depth == self.depth:
-      return self.evaluationFunction(state)
+      return self.evaluationFunction(gameState)
 
+    actions = gameState.getLegalPacmanActions()
+
+    if len(actions) > 0:
+      v = float('-inf')
     else:
-      actions = state.getLegalActions(agent)
+      v = self.evaluationFunction(gameState)
 
-      if len(actions) > 0:
-        v = float('-inf')
-      else:
-        v = self.evaluationFunction(state)
-
-      for action in state.getLegalActions(agent):
-        v = max(v, self.expected_value(depth, agent+1, state.generateSuccessor(agent, action)))
+    for action in actions:
+      v = max(v, self.expVal(depth, 1, gameState.generatePacmanSuccessor(action)))
                           
     return v
 
-  def expected_value(self, depth, agent, state):
-    if depth == self.depth:
-      return self.evaluationFunction(state)
+  def expVal(self, depth, agent, gameState):
+    #added gameState.isLose()...
+    if depth == self.depth or gameState.isLose() or gameState.isWin():
+      return self.evaluationFunction(gameState)
 
-    else:
-      v = 0;
-      actions = state.getLegalActions(agent)
+    v = 0;
+    agentNum = gameState.getNumAgents() - 1
+    actions = gameState.getLegalActions(agent)
 
-      for action in actions:
-        if agent == (state.getNumAgents() - 1):
-          v += self.max_value(depth+1, 0, state.generateSuccessor(agent, action))
-        else:
-          v += self.expected_value(depth, agent+1, state.generateSuccessor(agent, action))
-                   
-      if len(actions) != 0:
-        return v / len(actions)
+    for action in actions:
+      if agent == (agentNum):
+        v += self.maxVal(depth + 1, gameState.generateSuccessor(agent, action))
       else:
-        return self.evaluationFunction(state)
+        v += self.expVal(depth, agent + 1, gameState.generateSuccessor(agent, action))
+                   
+    #if len(actions) != 0:
+    return v / len(actions)
+    #else:
+      #return self.evaluationFunction(gameState)
 
 
 
