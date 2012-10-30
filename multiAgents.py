@@ -183,14 +183,14 @@ class MinimaxAgent(MultiAgentSearchAgent):
     """
     "*** YOUR CODE HERE ***"
     
-    v = float('-inf')
+    best_cost = float('-inf')
     next_action = Directions.STOP
 
     for action in gameState.getLegalActions(0):
       min_val = self.min_value(0, 1, gameState.generateSuccessor(0, action))
 
-      if (min_val > v) and (action != Directions.STOP):
-        v = min_val
+      if (min_val > best_cost) and (action != Directions.STOP):
+        best_cost = min_val
         next_action = action
 
     return next_action
@@ -204,16 +204,16 @@ class MinimaxAgent(MultiAgentSearchAgent):
       actions = state.getLegalActions(agent)
 
       if len(actions) > 0:
-        v = float('-inf')
+        best_cost = float('-inf')
       else:
-        v = self.evaluationFunction(state)
+        best_cost = self.evaluationFunction(state)
 
       for action in actions:
-        s = self.min_value(depth, agent+1, state.generateSuccessor(agent, action))
-        if s > v:
-          v = s
+        current_cost = self.min_value(depth, agent+1, state.generateSuccessor(agent, action))
+        if current_cost > best_cost:
+          best_cost = current_cost
 
-      return v
+      return best_cost
 
   def min_value(self, depth, agent, state):
     if depth == self.depth:
@@ -223,21 +223,21 @@ class MinimaxAgent(MultiAgentSearchAgent):
       actions = state.getLegalActions(agent)
 
       if len(actions) > 0:
-        v = float('inf')
+        best_cost = float('inf')
       else:
-        v = self.evaluationFunction(state)
+        best_cost = self.evaluationFunction(state)
 
       for action in actions:
         if agent == (state.getNumAgents() - 1):
-          s = self.max_value(depth+1, 0, state.generateSuccessor(agent, action))
-          if s < v:
-            v = s
+          current_cost = self.max_value(depth+1, 0, state.generateSuccessor(agent, action))
+          if current_cost < best_cost:
+            best_cost = current_cost
 
         else:
-          s = self.min_value(depth, agent+1, state.generateSuccessor(agent, action))
-          if s < v:
-            v = s  
-      return v
+          current_cost = self.min_value(depth, agent+1, state.generateSuccessor(agent, action))
+          if current_cost < best_cost:
+            best_cost = current_cost  
+      return best_cost
 
 class AlphaBetaAgent(MultiAgentSearchAgent):
   """
@@ -248,12 +248,12 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
     """
       Returns the minimax action using self.depth and self.evaluationFunction
     """
-    v = float('-inf')
+    best_cost = float('-inf')
     next_action = Directions.STOP
     for action in gameState.getLegalActions(0):
       min_val = self.min_value(0, 1, gameState.generateSuccessor(0, action), float('-inf'), float('inf'))
-      if (min_val > v) and (action != Directions.STOP):
-        v = min_val
+      if (min_val > best_cost) and (action != Directions.STOP):
+        best_cost = min_val
         next_action = action
     return next_action
               
@@ -264,15 +264,15 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
     else:
       actions = state.getLegalActions(agent)
       if len(actions) > 0:
-        v = float('-inf')
+        best_cost = float('-inf')
       else:
-        v = self.evaluationFunction(state)
+        best_cost = self.evaluationFunction(state)
       for action in actions:
-        v = max(v, self.min_value(depth, agent+1, state.generateSuccessor(agent, action), alpha, beta))
-        if v >= beta:
-          return v
-        alpha = max(v, alpha)
-      return v
+        best_cost = max(best_cost, self.min_value(depth, agent+1, state.generateSuccessor(agent, action), alpha, beta))
+        if best_cost >= beta:
+          return best_cost
+        alpha = max(best_cost, alpha)
+      return best_cost
 
   def min_value(self, depth, agent, state, alpha, beta):
     if depth == self.depth:
@@ -280,21 +280,21 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
     else:
       actions = state.getLegalActions(agent)
       if len(actions) > 0:
-        v = float('inf')
+        best_cost = float('inf')
       else:
-        v = self.evaluationFunction(state)
+        best_cost = self.evaluationFunction(state)
       for action in actions:
         if agent == (state.getNumAgents() - 1):
-          v = min(v, self.max_value(depth+1, 0, state.generateSuccessor(agent, action), alpha, beta))
-          if v <= alpha:
-            return v
-          beta = min(v, beta)
+          best_cost = min(best_cost, self.max_value(depth+1, 0, state.generateSuccessor(agent, action), alpha, beta))
+          if best_cost <= alpha:
+            return best_cost
+          beta = min(best_cost, beta)
         else:
-          v = min(v, self.min_value(depth, agent+1, state.generateSuccessor(agent, action), alpha, beta))
-          if v <= alpha:
-            return v
-          beta = min(v, beta)
-      return v
+          best_cost = min(best_cost, self.min_value(depth, agent+1, state.generateSuccessor(agent, action), alpha, beta))
+          if best_cost <= alpha:
+            return best_cost
+          beta = min(best_cost, beta)
+      return best_cost
 
 class ExpectimaxAgent(MultiAgentSearchAgent):
   """
