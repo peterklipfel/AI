@@ -86,7 +86,7 @@ class ReflexAgent(Agent):
     def find_manhattan(food):
       return abs(food[0] - newPos[0]) + abs(food[1] - newPos[1])
     closest_food = min(map(find_manhattan, food_distances))
-    
+
     game_score = currentGameState.getScore()
     next_score = successorGameState.getScore()
     if next_score > game_score:
@@ -412,5 +412,17 @@ class ContestAgent(MultiAgentSearchAgent):
       just make a beeline straight towards Pacman (or away from him if they're scared!)
     """
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    score = -999999
+    best_action = None
+    actions = gameState.getLegalActions()
+    actions.remove("Stop")
+    for action in actions:
+      next_state = gameState.generateSuccessor(action, 0)
+      current_score = betterEvaluationFunction(next_state)
+      if current_score > score:
+        score = current_score
+        best_action = action
+    if best_action == None:
+      best_action = Directions.STOP
+    return best_action
 
