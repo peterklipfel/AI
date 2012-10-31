@@ -185,12 +185,15 @@ Returns the total number of agents in the game
     
     bestCost = float('-inf')
     nextAction = Directions.STOP
+    actions = gameState.getLegalPacmanActions()
+    if Directions.STOP in actions:
+      actions.remove(Directions.STOP)
 
-    for action in gameState.getLegalActions(0):
+    for action in actions:
       gameStates = gameState.generatePacmanSuccessor(action)
       minVal = self.minVal(0, 1, gameStates)
       
-      if (minVal > bestCost) and (action != Directions.STOP):
+      if (minVal > bestCost):
         bestCost = minVal
         nextAction = action
 
@@ -231,12 +234,12 @@ Returns the total number of agents in the game
     for action in actions:
       gameStates = gameState.generateSuccessor(agent, action)
       if agent == (numAgents):
-        currentCost = self.maxVal(depth+1, gameStates)
+        currentCost = self.maxVal(depth + 1, gameStates)
         if currentCost < bestCost:
           bestCost = currentCost
 
       else:
-        currentCost = self.minVal(depth, agent+1, gameStates)
+        currentCost = self.minVal(depth, agent + 1, gameStates)
         if currentCost < bestCost:
           bestCost = currentCost
     return bestCost
@@ -324,8 +327,6 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
               
 
   def maxVal(self, depth, gameState):
-    #removed agent from the function head, called PacmanActions
-    #removed else statement after this
     if depth == self.depth:
       return self.evaluationFunction(gameState)
 
@@ -342,7 +343,6 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
     return v
 
   def expVal(self, depth, agent, gameState):
-    #added gameState.isLose()...
     if depth == self.depth or gameState.isLose() or gameState.isWin():
       return self.evaluationFunction(gameState)
 
@@ -356,11 +356,7 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
       else:
         v += self.expVal(depth, agent + 1, gameState.generateSuccessor(agent, action))
                    
-    #if len(actions) != 0:
     return v / len(actions)
-    #else:
-      #return self.evaluationFunction(gameState)
-
 
 
 def betterEvaluationFunction(currentGameState):
