@@ -43,9 +43,6 @@ class ReflexAgent(Agent):
     chosenIndex = random.choice(bestIndices) # Pick randomly among the best
 
     "Add more of your code here if you want to"
-    print '###################################################################'
-    print "chosen action: " + str(legalMoves[chosenIndex])
-    print '###################################################################'
 
     return legalMoves[chosenIndex]
 
@@ -79,16 +76,13 @@ class ReflexAgent(Agent):
     # ['CELLS_PER_INT', '__doc__', '__eq__', '__getitem__', '__hash__', '__init__', '__module__', '__setitem__', '__str__', '_cellIndexToPosition', '_unpackBits', '_unpackInt',
     # 'asList', 'copy', 'count', 'data', 'deepCopy', 'height', 'packBits', 'shallowCopy', 'width']
 
-    print "pacman pos: " + str(newPos)
     score = 0
 
   # if the next move is a lose, don't go there
     if successorGameState.isLose():
-      print "lose"
       return 0
   # if the next move is a win, go there
     if successorGameState.isWin():
-      print "win"
       return 99999
 
   # find the manhattan distance to all food
@@ -109,14 +103,9 @@ class ReflexAgent(Agent):
     if next_score > game_score:
       return 50 + (next_score-game_score)
 
-    print str(newPos) + " -- " + str(successorGameState.data.food.asList())
-
   # cap the score at 50, but weight up to it for how close the next food is
     score = 50/closest_food
 
-    print "--------------"
-    print "score: " + str(score)
-    print "--------------"
     return score
     # return successorGameState.getScore()
 
@@ -445,40 +434,40 @@ class ContestAgent(MultiAgentSearchAgent):
       just make a beeline straight towards Pacman (or away from him if they're scared!)
     """
     # "*** YOUR CODE HERE ***"
-    # score = -999999
-    # best_action = None
-    # actions = gameState.getLegalActions()
-    # actions.remove("Stop")
-    # for action in actions:
-    #   next_state = gameState.generateSuccessor(action, 0)
-    #   current_score = betterEvaluationFunction(next_state)
-    #   if current_score > score:
-    #     score = current_score
-    #     best_action = action
-    # if best_action == None:
-    #   best_action = Directions.STOP
-    # return best_action
+    score = -999999
+    best_action = None
+    actions = gameState.getLegalActions()
+    actions.remove("Stop")
+    for action in actions:
+      next_state = gameState.generateSuccessor(0, action)
+      current_score = betterEvaluationFunction(next_state)
+      if current_score > score:
+        score = current_score
+        best_action = action
+    if best_action == None:
+      best_action = Directions.STOP
+    return best_action
 
-  # if the next move is a lose, don't go there
-    if successorGameState.isLose():
-      return 0
-  # if the next move is a win, go there
-    if successorGameState.isWin():
-      return 99999
+  # # if the next move is a lose, don't go there
+  #   if successorGameState.isLose():
+  #     return 0
+  # # if the next move is a win, go there
+  #   if successorGameState.isWin():
+  #     return 99999
 
-  # find the manhattan distance to all food
-    food_distances = successorGameState.data.food.asList()
-    def find_manhattan(food):
-      return abs(food[0] - newPos[0]) + abs(food[1] - newPos[1])
-    closest_food = min(map(find_manhattan, food_distances))
+  # # find the manhattan distance to all food
+  #   food_distances = successorGameState.data.food.asList()
+  #   def find_manhattan(food):
+  #     return abs(food[0] - newPos[0]) + abs(food[1] - newPos[1])
+  #   closest_food = min(map(find_manhattan, food_distances))
 
-    game_score = currentGameState.getScore()
-    next_score = successorGameState.getScore()
-    if next_score > game_score:
-      return 50 + (next_score-game_score)
+  #   game_score = currentGameState.getScore()
+  #   next_score = successorGameState.getScore()
+  #   if next_score > game_score:
+  #     return 50 + (next_score-game_score)
 
 
-  # cap the score at 50, but weight up to it for how close the next food is
-    score = 50/closest_food
-    return score
+  # # cap the score at 50, but weight up to it for how close the next food is
+  #   score = 50/closest_food
+  #   return score
 
