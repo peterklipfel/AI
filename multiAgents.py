@@ -358,33 +358,69 @@ def betterEvaluationFunction(currentGameState):
     Your extreme ghost-hunting, pellet-nabbing, food-gobbling, unstoppable
     evaluation function (question 5).
 
-    DESCRIPTION: <write something here so we know what you did>
+    DESCRIPTION:
+    variables
+    -----------------------------------------------------------------------------------------------
+    new_pos          -> Pac man's new position
+    new_food         -> the new state of the food
+    new_ghost_states -> the new state of the ghosts
+    new_scared_times -> a check of whether ghosts are scared
+    new_food_list    -> the new state of the food in list form
+    food_distance    -> the sum of all the manhattan distances
+    score            -> utility of the state we are checking
+    ghost_score      -> how far away from ghost we want to be
+    -----------------------------------------------------------------------------------------------
+    explanation
+    -----------------------------------------------------------------------------------------------
+    We first calculate food_distance to be the sum of the manhattan distances to every piece of 
+    food.  The intention of this is to move pacman in the general direction of food and try to 
+    minimize the seperation of food pieces.  
+    
+    Next, we check to see if there is no food left.  If ther is none, then we return an arbitrarily
+    large number (integer to retain performance) to indicate a win state.  
+    
+    The next calculation is to account for the opponent ghosts.  The first check is to see whether
+    the scared times will last to the next move.  If they do, then we start the score with a bonus.
+    Then we iterate over all the states and subtract out the score from the ghosts based on how 
+    close they are.  I chose `3` because it seemed to make a more daring pacman and living on the
+    edge is better.  Originally, I was considering `2`, but decided against it because pacman has a
+    lower likelyhood of being eaten if he looks ahead 2 squares instead of just 1.  Though 5 felt
+    a bit too conservative, and 4 didn't seem to do quite as well when I ran the suites many times. 
+
+    Finally, we add a weight to the score we return based on the state of each ghost.  In the 
+    numerator we have 1/(number of food pieces left), so this weights the score up as the number of
+    food pieces decreases.  In the denominator, we have food_distance.  Again, this weights the
+    score up when the general distance to food decreases.  Finally, we add the score of the current
+    ghost (which will be negative unless the ghost is scared) and then add the score that the API
+    provides.  This is to help push Pacman toward food, and toward scared ghosts. 
+    ----------------------------------------------------------------------------------------------- 
   """
   "*** YOUR CODE HERE ***"
-  newPos = currentGameState.getPacmanPosition()
-  newFood = currentGameState.getFood()
-  newGhostStates = currentGameState.getGhostStates()
-  newScaredTimes = [ghostState.scaredTimer for ghostState in newGhostStates]
+  new_pos = currentGameState.getPacmanPosition()
+  new_food = currentGameState.getFood()
+  new_ghost_states = currentGameState.getGhostStates()
+  new_scared_times = [ghostState.scaredTimer for ghostState in new_ghost_states]
 
-  new_food_list = newFood.asList()
+  new_food_list = new_food.asList()
  
   food_distance = 0
   if len(new_food_list) > 0:
-    food_distance = reduce(lambda x, y: x + y, [manhattanDistance(f,newPos) for f in new_food_list])
+    # http://docs.python.org/2/library/functions.html#reduce ... Thanks Professor Chang
+    food_distance = reduce(lambda x, y: x + y, [manhattanDistance(f,new_pos) for f in new_food_list])
   
   score = 0
   if len(new_food_list) == 0:
-    score = 1000000000
+    score = 99999999
   
   ghost_score = 0
-  if (len(newScaredTimes) > 1) and (len(newScaredTimes) < currentGameState.getNumAgents() - 2):
+  if (len(new_scared_times) > 1):
     ghost_score += 100.0
-  for ghost_state in newGhostStates:
-    distance = manhattanDistance(newPos, ghost_state.getPosition())
+  for ghost_state in new_ghost_states:
+    distance = manhattanDistance(new_pos, ghost_state.getPosition())
     if (ghost_state.scaredTimer == 0) and (distance < 3):
       ghost_score -= 1.0 / (10.0 - distance);
   
-    score += 1.0 / (1 + len(new_food_list)) + 1.0 / (1 + food_distance) + ghost_score + currentGameState.getScore()
+    score += ((1.0 / (1 + len(new_food_list)) + 1.0) / (1 + food_distance)) + ghost_score + currentGameState.getScore()
     
   return score;
 
