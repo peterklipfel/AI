@@ -43,9 +43,6 @@ class ReflexAgent(Agent):
     chosenIndex = random.choice(bestIndices) # Pick randomly among the best
 
     "Add more of your code here if you want to"
-    print '###################################################################'
-    print "chosen action:  " + str(legalMoves[chosenIndex])
-    print '###################################################################'
 
     return legalMoves[chosenIndex]
 
@@ -75,56 +72,30 @@ class ReflexAgent(Agent):
     newScaredTimes = [ghostState.scaredTimer for ghostState in newGhostStates]
 
     "*** YOUR CODE HERE ***"
-    # dir(successorGameState.data.food) =>
-    # ['CELLS_PER_INT', '__doc__', '__eq__', '__getitem__', '__hash__', '__init__', '__module__', '__setitem__', '__str__', '_cellIndexToPosition', '_unpackBits', '_unpackInt', 
-    # 'asList', 'copy', 'count', 'data', 'deepCopy', 'height', 'packBits', 'shallowCopy', 'width']
-
-    print "pacman pos:  " + str(newPos)
     score = 0
 
-# if the next move is a lose, don't go there
+  # if the next move is a lose, don't go there
     if successorGameState.isLose():
-      print "lose"
       return 0
-# if the next move is a win, go there
+  # if the next move is a win, go there
     if successorGameState.isWin():
-      print "win"
       return 99999
 
-# calculate how close the ghosts are
-# this is not being used currently
-    ghost_closeness = []
-    for state in newGhostStates:
-      manhattan = abs(state.getPosition()[0] - newPos[0]) + abs(state.getPosition()[1] - newPos[1])
-      ghost_closeness.append(manhattan)
-      # print "     " + str(state)
-      # print "manhattan :  " + str(manhattan)
-    closest_ghost_distance = min(ghost_closeness)
-    if closest_ghost_distance <= 1:
-      return 0
-
-# find the manhattan distance to all food
-    food_distances = []
-    for food in successorGameState.data.food.asList():
-      manhattan = abs(food[0] - newPos[0]) + abs(food[1] - newPos[1])
-      food_distances.append(manhattan)
-
-    closest_food = min(food_distances)
+  # find the manhattan distance to all food
+    food_distances = successorGameState.data.food.asList()
+    def find_manhattan(food):
+      return abs(food[0] - newPos[0]) + abs(food[1] - newPos[1])
+    closest_food = min(map(find_manhattan, food_distances))
+    
     game_score = currentGameState.getScore()
     next_score = successorGameState.getScore()
     if next_score > game_score:
       return 50 + (next_score-game_score)
 
-    print str(newPos) + " -- " + str(successorGameState.data.food.asList())
 
-# cap the score at 50, but weight up to it for how close the next food is
+  # cap the score at 50, but weight up to it for how close the next food is
     score = 50/closest_food
-
-    print "--------------"
-    print "score: " + str(score)
-    print "--------------"
     return score
-    # return successorGameState.getScore()
 
 def scoreEvaluationFunction(currentGameState):
   """
