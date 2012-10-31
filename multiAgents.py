@@ -411,18 +411,41 @@ class ContestAgent(MultiAgentSearchAgent):
       Ghosts don't behave randomly anymore, but they aren't perfect either -- they'll usually
       just make a beeline straight towards Pacman (or away from him if they're scared!)
     """
-    "*** YOUR CODE HERE ***"
-    score = -999999
-    best_action = None
-    actions = gameState.getLegalActions()
-    actions.remove("Stop")
-    for action in actions:
-      next_state = gameState.generateSuccessor(action, 0)
-      current_score = betterEvaluationFunction(next_state)
-      if current_score > score:
-        score = current_score
-        best_action = action
-    if best_action == None:
-      best_action = Directions.STOP
-    return best_action
+    # "*** YOUR CODE HERE ***"
+    # score = -999999
+    # best_action = None
+    # actions = gameState.getLegalActions()
+    # actions.remove("Stop")
+    # for action in actions:
+    #   next_state = gameState.generateSuccessor(action, 0)
+    #   current_score = betterEvaluationFunction(next_state)
+    #   if current_score > score:
+    #     score = current_score
+    #     best_action = action
+    # if best_action == None:
+    #   best_action = Directions.STOP
+    # return best_action
+
+  # if the next move is a lose, don't go there
+    if successorGameState.isLose():
+      return 0
+  # if the next move is a win, go there
+    if successorGameState.isWin():
+      return 99999
+
+  # find the manhattan distance to all food
+    food_distances = successorGameState.data.food.asList()
+    def find_manhattan(food):
+      return abs(food[0] - newPos[0]) + abs(food[1] - newPos[1])
+    closest_food = min(map(find_manhattan, food_distances))
+
+    game_score = currentGameState.getScore()
+    next_score = successorGameState.getScore()
+    if next_score > game_score:
+      return 50 + (next_score-game_score)
+
+
+  # cap the score at 50, but weight up to it for how close the next food is
+    score = 50/closest_food
+    return score
 
