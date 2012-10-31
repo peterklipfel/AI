@@ -43,9 +43,6 @@ class ReflexAgent(Agent):
     chosenIndex = random.choice(bestIndices) # Pick randomly among the best
 
     "Add more of your code here if you want to"
-    print '###################################################################'
-    print "chosen action: " + str(legalMoves[chosenIndex])
-    print '###################################################################'
 
     return legalMoves[chosenIndex]
 
@@ -75,20 +72,13 @@ class ReflexAgent(Agent):
     newScaredTimes = [ghostState.scaredTimer for ghostState in newGhostStates]
 
     "*** YOUR CODE HERE ***"
-    # dir(successorGameState.data.food) =>
-    # ['CELLS_PER_INT', '__doc__', '__eq__', '__getitem__', '__hash__', '__init__', '__module__', '__setitem__', '__str__', '_cellIndexToPosition', '_unpackBits', '_unpackInt',
-    # 'asList', 'copy', 'count', 'data', 'deepCopy', 'height', 'packBits', 'shallowCopy', 'width']
-
-    print "pacman pos: " + str(newPos)
     score = 0
 
   # if the next move is a lose, don't go there
     if successorGameState.isLose():
-      print "lose"
       return 0
   # if the next move is a win, go there
     if successorGameState.isWin():
-      print "win"
       return 99999
 
   # find the manhattan distance to all food
@@ -97,28 +87,15 @@ class ReflexAgent(Agent):
       return abs(food[0] - newPos[0]) + abs(food[1] - newPos[1])
     closest_food = min(map(find_manhattan, food_distances))
 
-# find the manhattan distance to all food
-    food_distances = []
-    for food in successorGameState.data.food.asList():
-      manhattan = abs(food[0] - newPos[0]) + abs(food[1] - newPos[1])
-      food_distances.append(manhattan)
-
-    closest_food = min(food_distances)
     game_score = currentGameState.getScore()
     next_score = successorGameState.getScore()
     if next_score > game_score:
       return 50 + (next_score-game_score)
 
-    print str(newPos) + " -- " + str(successorGameState.data.food.asList())
 
   # cap the score at 50, but weight up to it for how close the next food is
     score = 50/closest_food
-
-    print "--------------"
-    print "score: " + str(score)
-    print "--------------"
     return score
-    # return successorGameState.getScore()
 
 def scoreEvaluationFunction(currentGameState):
   """
@@ -229,11 +206,19 @@ class MinimaxAgent(MultiAgentSearchAgent):
         if currentCost < bestCost:
           bestCost = currentCost
 
+<<<<<<< HEAD
+        else:
+          current_cost = self.min_value(depth, agent+1, state.generateSuccessor(agent, action))
+          if current_cost < best_cost:
+            best_cost = current_cost  
+      return best_cost
+=======
       else:
         currentCost = self.minVal(depth, agent+1, gameStates)
         if currentCost < bestCost:
           bestCost = currentCost
     return bestCost
+>>>>>>> most code changed
 
 class AlphaBetaAgent(MultiAgentSearchAgent):
   """
@@ -242,6 +227,18 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
 
   def getAction(self, gameState):
     """
+<<<<<<< HEAD
+      Returns the minimax action using self.depth and self.evaluationFunction
+    """
+    best_cost = float('-inf')
+    next_action = Directions.STOP
+    for action in gameState.getLegalActions(0):
+      min_val = self.min_value(0, 1, gameState.generateSuccessor(0, action), float('-inf'), float('inf'))
+      if (min_val > best_cost) and (action != Directions.STOP):
+        best_cost = min_val
+        next_action = action
+    return next_action
+=======
 Returns the minimax action using self.depth and self.evaluationFunction
 """
     bestCost = float('-inf')
@@ -255,6 +252,7 @@ Returns the minimax action using self.depth and self.evaluationFunction
         bestCost = minVal
         nextAction = action
     return nextAction
+>>>>>>> most code changed
               
 
   def maxVal(self, depth, gameState, alpha, beta):
