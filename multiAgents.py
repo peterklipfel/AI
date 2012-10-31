@@ -63,19 +63,12 @@ class ReflexAgent(Agent):
     """
     # Useful information you can extract from a GameState (pacman.py)
     successorGameState = currentGameState.generatePacmanSuccessor(action)
-    # ['__doc__', '__eq__', '__hash__', '__init__', '__module__', '__str__', 'data', 'deepCopy', 'generatePacmanSuccessor', 'generateSuccessor', 'getCapsules', 'getFood', 
-    # 'getGhostPosition', 'getGhostPositions', 'getGhostState', 'getGhostStates', 'getLegalActions', 'getLegalPacmanActions', 'getNumAgents', 'getNumFood', 'getPacmanPosition', 
-    # 'getPacmanState', 'getScore', 'getWalls', 'hasFood', 'hasWall', 'initialize', 'isLose', 'isWin']
     newPos = successorGameState.getPacmanPosition()
     oldFood = currentGameState.getFood()
     newGhostStates = successorGameState.getGhostStates()
     newScaredTimes = [ghostState.scaredTimer for ghostState in newGhostStates]
 
     "*** YOUR CODE HERE ***"
-    # dir(successorGameState.data.food) =>
-    # ['CELLS_PER_INT', '__doc__', '__eq__', '__getitem__', '__hash__', '__init__', '__module__', '__setitem__', '__str__', '_cellIndexToPosition', '_unpackBits', '_unpackInt',
-    # 'asList', 'copy', 'count', 'data', 'deepCopy', 'height', 'packBits', 'shallowCopy', 'width']
-
     score = 0
 
   # if the next move is a lose, don't go there
@@ -448,26 +441,4 @@ class ContestAgent(MultiAgentSearchAgent):
       best_action = Directions.STOP
     return best_action
 
-  # # if the next move is a lose, don't go there
-  #   if successorGameState.isLose():
-  #     return 0
-  # # if the next move is a win, go there
-  #   if successorGameState.isWin():
-  #     return 99999
-
-  # # find the manhattan distance to all food
-  #   food_distances = successorGameState.data.food.asList()
-  #   def find_manhattan(food):
-  #     return abs(food[0] - newPos[0]) + abs(food[1] - newPos[1])
-  #   closest_food = min(map(find_manhattan, food_distances))
-
-  #   game_score = currentGameState.getScore()
-  #   next_score = successorGameState.getScore()
-  #   if next_score > game_score:
-  #     return 50 + (next_score-game_score)
-
-
-  # # cap the score at 50, but weight up to it for how close the next food is
-  #   score = 50/closest_food
-  #   return score
 
