@@ -158,27 +158,27 @@ class MinimaxAgent(MultiAgentSearchAgent):
         Returns the total number of agents in the game
     """
     "*** YOUR CODE HERE ***"
-    
+
     bestCost = float('-inf')
     nextAction = Directions.STOP
 
     for action in gameState.getLegalActions(0):
       gameStates = gameState.generatePacmanSuccessor(action)
       minVal = self.minVal(0, 1, gameStates)
-      
+
       if (minVal > bestCost) and (action != Directions.STOP):
         bestCost = minVal
         nextAction = action
 
     return nextAction
-                
-  
+
+
   def maxVal(self, depth, gameState):
     if depth == self.depth:
       return self.evaluationFunction(gameState)
 
     actions = gameState.getLegalPacmanActions()
-    
+
     if len(actions) > 0:
       bestCost = float('-inf')
     else:
@@ -237,7 +237,7 @@ Returns the minimax action using self.depth and self.evaluationFunction
         bestCost = minVal
         nextAction = action
     return nextAction
-              
+
 
   def maxVal(self, depth, gameState, alpha, beta):
     if depth == self.depth:
@@ -297,7 +297,7 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
         nextAction = action
 
     return nextAction
-              
+
 
   def maxVal(self, depth, gameState):
     #removed agent from the function head, called PacmanActions
@@ -314,7 +314,7 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
 
     for action in actions:
       v = max(v, self.expVal(depth, 1, gameState.generatePacmanSuccessor(action)))
-                          
+
     return v
 
   def expVal(self, depth, agent, gameState):
@@ -331,7 +331,7 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
         v += self.maxVal(depth + 1, gameState.generateSuccessor(agent, action))
       else:
         v += self.expVal(depth, agent + 1, gameState.generateSuccessor(agent, action))
-                   
+
     #if len(actions) != 0:
     return v / len(actions)
     #else:
@@ -358,28 +358,28 @@ def betterEvaluationFunction(currentGameState):
     -----------------------------------------------------------------------------------------------
     explanation
     -----------------------------------------------------------------------------------------------
-    We first calculate food_distance to be the sum of the manhattan distances to every piece of 
-    food.  The intention of this is to move pacman in the general direction of food and try to 
-    minimize the seperation of food pieces.  
-    
+    We first calculate food_distance to be the sum of the manhattan distances to every piece of
+    food.  The intention of this is to move pacman in the general direction of food and try to
+    minimize the seperation of food pieces.
+
     Next, we check to see if there is no food left.  If ther is none, then we return an arbitrarily
-    large number (integer to retain performance) to indicate a win state.  
-    
+    large number (integer to retain performance) to indicate a win state.
+
     The next calculation is to account for the opponent ghosts.  The first check is to see whether
     the scared times will last to the next move.  If they do, then we start the score with a bonus.
-    Then we iterate over all the states and subtract out the score from the ghosts based on how 
+    Then we iterate over all the states and subtract out the score from the ghosts based on how
     close they are.  I chose `3` because it seemed to make a more daring pacman and living on the
     edge is better.  Originally, I was considering `2`, but decided against it because pacman has a
     lower likelyhood of being eaten if he looks ahead 2 squares instead of just 1.  Though 5 felt
-    a bit too conservative, and 4 didn't seem to do quite as well when I ran the suites many times. 
+    a bit too conservative, and 4 didn't seem to do quite as well when I ran the suites many times.
 
-    Finally, we add a weight to the score we return based on the state of each ghost.  In the 
+    Finally, we add a weight to the score we return based on the state of each ghost.  In the
     numerator we have 1/(number of food pieces left), so this weights the score up as the number of
     food pieces decreases.  In the denominator, we have food_distance.  Again, this weights the
     score up when the general distance to food decreases.  Finally, we add the score of the current
     ghost (which will be negative unless the ghost is scared) and then add the score that the API
-    provides.  This is to help push Pacman toward food, and toward scared ghosts. 
-    ----------------------------------------------------------------------------------------------- 
+    provides.  This is to help push Pacman toward food, and toward scared ghosts.
+    -----------------------------------------------------------------------------------------------
   """
   "*** YOUR CODE HERE ***"
   new_pos = currentGameState.getPacmanPosition()
@@ -388,16 +388,16 @@ def betterEvaluationFunction(currentGameState):
   new_scared_times = [ghostState.scaredTimer for ghostState in new_ghost_states]
 
   new_food_list = new_food.asList()
- 
+
   food_distance = 0
   if len(new_food_list) > 0:
     # http://docs.python.org/2/library/functions.html#reduce ... Thanks Professor Chang
     food_distance = reduce(lambda x, y: x + y, [manhattanDistance(f,new_pos) for f in new_food_list])
-  
+
   score = 0
   if len(new_food_list) == 0:
     score = 99999999
-  
+
   ghost_score = 0
   if (len(new_scared_times) > 1):
     ghost_score += 100.0
@@ -405,9 +405,9 @@ def betterEvaluationFunction(currentGameState):
     distance = manhattanDistance(new_pos, ghost_state.getPosition())
     if (ghost_state.scaredTimer == 0) and (distance < 3):
       ghost_score -= 1.0 / (10.0 - distance);
-  
+
     score += ((1.0 / (1 + len(new_food_list)) + 1.0) / (1 + food_distance)) + ghost_score + currentGameState.getScore()
-    
+
   return score;
 
 # Abbreviation
