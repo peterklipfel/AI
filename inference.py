@@ -131,7 +131,7 @@ class ExactInference(InferenceModule):
 
         The transition model is not entirely stationary: it may depend on Pacman's
         current position (e.g., for DirectionalGhost).  However, this is not a problem,
-        as Pacman's current position is known.
+        asx Pacman's current position is known.
 
         In order to obtain the distribution over new positions for the
         ghost, given its previous position (oldPos) as well as Pacman's
@@ -169,6 +169,16 @@ class ExactInference(InferenceModule):
         """
 
         "*** YOUR CODE HERE ***"
+
+        allPossible = util.Counter()
+        for oldPos in self.legalPositions:
+            newPosDist = self.getPositionDistribution(self.setGhostPosition(gameState, oldPos))
+            for newPos, prob in newPosDist.items():
+                allPossible[newPos] += prob*self.beliefs[oldPos]    
+
+        allPossible.normalize()
+        self.beliefs = allPossible
+        return self.beliefs
 
     def getBeliefDistribution(self):
         return self.beliefs
