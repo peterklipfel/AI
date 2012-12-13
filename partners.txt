@@ -1,2 +1,0 @@
-100048372,alice.chien@colorado.edu,Alice Y. Chien
-100047616,peter.klipfel@colorado.edu, Peter Klipfel
